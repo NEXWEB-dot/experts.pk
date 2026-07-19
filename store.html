@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experts Store | Expert Services</title>
+<meta name="description" content="Shop RFID protection products from Experts Store — Cash on Delivery across Pakistan.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="screen-reader-text" href="#main-content">Skip to content</a>
+
+<!-- ===================== Header / Sticky Nav ===================== -->
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="logo">EXPERT<span>.</span>SERVICES</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="store.html" class="active">Store</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+
+    <button class="nav-cart" id="cartToggle" aria-label="Open cart">
+      Cart
+      <span class="cart-count" id="navCartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <!-- ===================== Store Hero ===================== -->
+  <section class="store-hero">
+    <div class="container">
+      <div class="section-label">
+        <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+        EXPERTS STORE
+      </div>
+      <h1 style="font-size:2.4em;">RFID Protection, Done Right.</h1>
+      <p>Genuine RFID-blocking accessories for your cards, passport and phone. Cash on Delivery available across Pakistan.</p>
+    </div>
+  </section>
+
+  <!-- ===================== Product Grid ===================== -->
+  <section>
+    <div class="product-grid" id="productGrid">
+      <!-- Product cards injected by store.js -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== Footer ===================== -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Expert Services</h4>
+      <p style="color:#8a8a8a; font-size:0.9rem; max-width:26ch;">A culture built on customer care, integrity and excellence.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="store.html">Store</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Store</h4>
+      <ul>
+        <li><a href="store.html">All Products</a></li>
+        <li><a href="store.html">Cash on Delivery</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Expert Services &amp; Experts International. All rights reserved.</span>
+    <span>Karachi, Pakistan</span>
+  </div>
+</footer>
+
+<!-- ===================== Cart Drawer ===================== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <!-- injected by store.js -->
+  </div>
+  <div class="cart-footer">
+    <div class="cart-subtotal-row">
+      <span>Subtotal</span>
+      <span id="cartSubtotal">PKR 0</span>
+    </div>
+    <button class="btn-submit" id="checkoutBtn">Proceed to Checkout</button>
+  </div>
+</aside>
+
+<!-- ===================== Checkout Modal ===================== -->
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="checkout-modal" id="checkoutModal">
+
+    <!-- Step 1: Checkout form -->
+    <div id="checkoutFormStep">
+      <div class="checkout-header">
+        <button class="checkout-close" id="checkoutClose" aria-label="Close checkout">&times;</button>
+        <h2>Checkout</h2>
+        <p class="checkout-sub">Complete your details to place the order.</p>
+      </div>
+
+      <form id="checkoutForm">
+        <div class="checkout-grid">
+          <div class="form-field full">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" required>
+          </div>
+          <div class="form-field full">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="03XX-XXXXXXX" required>
+          </div>
+          <div class="form-field full">
+            <label for="address">Delivery Address</label>
+            <input type="text" id="address" required>
+          </div>
+          <div class="form-field">
+            <label for="city">City</label>
+            <input type="text" id="city" required>
+          </div>
+          <div class="form-field">
+            <label for="postalCode">Postal Code (optional)</label>
+            <input type="text" id="postalCode">
+          </div>
+        </div>
+
+        <div class="payment-option">
+          <span class="radio-dot"></span>
+          <div>
+            <h4>Cash on Delivery (COD)</h4>
+            <p>Pay in cash when your order arrives at your doorstep.</p>
+          </div>
+        </div>
+
+        <div class="order-summary-box" id="orderSummaryBox">
+          <!-- injected by store.js -->
+        </div>
+
+        <button type="submit" class="btn-submit">Place Order — Cash on Delivery</button>
+      </form>
+    </div>
+
+    <!-- Step 2: Confirmation -->
+    <div id="checkoutConfirmStep" style="display:none;">
+      <div class="confirmation-box">
+        <div class="check-mark">&#10003;</div>
+        <h2>Order Placed Successfully!</h2>
+        <p>Thank you for shopping with Experts Store.</p>
+        <p>Your order will be delivered via Cash on Delivery.</p>
+        <div class="order-id" id="orderIdDisplay"></div>
+        <a href="store.html" class="btn btn-gold" id="continueShoppingBtn">Continue Shopping</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/store.js"></script>
+</body>
+</html>
