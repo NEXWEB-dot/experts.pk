@@ -280,7 +280,7 @@
     }
 
     itemsWrap.innerHTML = cart.map(function (item, index) {
-      var colorText = item.color ? \`<span style="font-size:0.75rem; color:#8a8a8a; display:block; margin-bottom:4px;">Color: \${item.color}</span>\` : '';
+      var colorText = item.color ? `<span style="font-size:0.75rem; color:#8a8a8a; display:block; margin-bottom:4px;">Color: ${item.color}</span>` : '';
       
       return (
         '<div class="cart-item">' +
