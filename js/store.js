@@ -1,16 +1,13 @@
 /* ==========================================================================
    Expert Services — Store logic (products, cart, checkout)
    Persists cart in localStorage under "expertsStoreCart" (shared w/ main.js)
+   Fetches from Sanity CMS
    ========================================================================== */
 (function () {
   "use strict";
 
   var CART_KEY = "expertsStoreCart";
 
-  /* ---------- Placeholder product photography ----------
-     Real product photos aren't ready yet for anything beyond the first
-     item. This inline SVG stands in until real photography is uploaded —
-     just swap a product's `img` value for a real file when it's ready. */
   var PLACEHOLDER_PHOTO = "data:image/svg+xml," + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">' +
       '<rect width="600" height="600" fill="#0d0d0d"/>' +
@@ -18,69 +15,8 @@
     "</svg>"
   );
 
-  /* ---------- Product catalog ---------- */
-  var PRODUCTS = [
-    {
-      id: "rfid-silver-1pc",
-      name: "RFID Silver — 1 PC",
-      desc: "RFID-blocking card sleeve in a premium silver finish. Shields your credit, debit and NFC-enabled cards from unauthorized contactless scanning — ultra-slim and lightweight for everyday carry.",
-      price: 150,
-      oldPrice: null,
-      badge: null,
-      comingSoon: false,
-      img: "images/1.jpg"
-    },
-    {
-      id: "rfid-silver-special-1pc",
-      name: "RFID Silver Special — 1 PC",
-      desc: "RFID-blocking card sleeve in a premium silver finish. Shields your credit, debit and NFC-enabled cards from unauthorized contactless scanning — ultra-slim and lightweight for everyday carry.",
-      price: 190,
-      oldPrice: null,
-      badge: "SPECIAL",
-      comingSoon: false,
-      img: PLACEHOLDER_PHOTO
-    },
-    {
-      id: "rfid-white-1pc",
-      name: "RFID White — 1 PC",
-      desc: "RFID-blocking card sleeve in a clean white finish. Shields your credit, debit and NFC-enabled cards from unauthorized contactless scanning — ultra-slim and lightweight for everyday carry.",
-      price: 155,
-      oldPrice: null,
-      badge: "COMING SOON",
-      comingSoon: true,
-      img: PLACEHOLDER_PHOTO
-    },
-    {
-      id: "rfid-white-special-1pc",
-      name: "RFID White Special — 1 PC",
-      desc: "RFID-blocking card sleeve in a clean white finish. Shields your credit, debit and NFC-enabled cards from unauthorized contactless scanning — ultra-slim and lightweight for everyday carry.",
-      price: 195,
-      oldPrice: null,
-      badge: "COMING SOON",
-      comingSoon: true,
-      img: PLACEHOLDER_PHOTO
-    },
-    {
-      id: "rfid-silver-5pc",
-      name: "RFID Silver — 5 PC Pack",
-      desc: "Value bundle of 5 RFID-blocking card sleeves in premium silver finish. Perfect for the whole family or a complete wallet refresh — same trusted protection, better value.",
-      price: 650,
-      oldPrice: null,
-      badge: "BUNDLE",
-      comingSoon: false,
-      img: PLACEHOLDER_PHOTO
-    },
-    {
-      id: "rfid-white-5pc",
-      name: "RFID White — 5 PC Pack",
-      desc: "Value bundle of 5 RFID-blocking card sleeves in clean white finish. Perfect for the whole family or a complete wallet refresh — same trusted protection, better value.",
-      price: 655,
-      oldPrice: null,
-      badge: "BUNDLE",
-      comingSoon: false,
-      img: PLACEHOLDER_PHOTO
-    }
-  ];
+  var allProducts = [];
+  var currentCategory = 'all';
 
   function formatPKR(n) {
     return "PKR " + n.toLocaleString("en-PK");
@@ -100,33 +36,42 @@
     if (window.updateNavCartCount) { window.updateNavCartCount(); }
   }
 
+  // Adding to cart from store uses default first color if available, or none
   function addToCart(productId) {
+    var product = allProducts.find(function (p) { return p._id === productId; });
+    if (!product) return;
+
     var cart = getCart();
-    var existing = cart.find(function (i) { return i.id === productId; });
+    var defaultColor = (product.colors && product.colors.length > 0) ? product.colors[0].name : null;
+    
+    var existing = cart.find(function (i) { 
+      return i.id === productId && i.color === defaultColor; 
+    });
+
     if (existing) {
       existing.qty += 1;
     } else {
-      cart.push({ id: productId, qty: 1 });
+      cart.push({ id: productId, qty: 1, color: defaultColor, price: product.price, name: product.name, img: product.images ? window.sanityClient.urlFor(product.images[0], {width: 200}) : PLACEHOLDER_PHOTO });
     }
     saveCart(cart);
     renderCart();
     openCart();
   }
 
-  function updateQty(productId, delta) {
+  function updateQty(index, delta) {
     var cart = getCart();
-    var item = cart.find(function (i) { return i.id === productId; });
-    if (!item) { return; }
-    item.qty += delta;
-    if (item.qty <= 0) {
-      cart = cart.filter(function (i) { return i.id !== productId; });
+    if (!cart[index]) return;
+    cart[index].qty += delta;
+    if (cart[index].qty <= 0) {
+      cart.splice(index, 1);
     }
     saveCart(cart);
     renderCart();
   }
 
-  function removeFromCart(productId) {
-    var cart = getCart().filter(function (i) { return i.id !== productId; });
+  function removeFromCart(index) {
+    var cart = getCart();
+    cart.splice(index, 1);
     saveCart(cart);
     renderCart();
   }
@@ -134,17 +79,107 @@
   function cartSubtotal() {
     var cart = getCart();
     return cart.reduce(function (sum, item) {
-      var product = PRODUCTS.find(function (p) { return p.id === item.id; });
-      return sum + (product ? product.price * item.qty : 0);
+      return sum + (item.price * item.qty);
     }, 0);
   }
 
+  /* ---------- Product & Category Fetching ---------- */
+  async function loadStoreData() {
+    if (!window.sanityClient) {
+      console.error("Sanity client not found");
+      return;
+    }
+
+    try {
+      // Fetch categories
+      const catQuery = `*[_type == "category"] | order(order asc) { _id, title, "slug": slug.current }`;
+      const categories = await window.sanityClient.fetch(catQuery);
+      renderFilterBar(categories);
+
+      // Fetch products
+      const prodQuery = `*[_type == "product"] | order(order asc, _createdAt desc) {
+        _id, name, "slug": slug.current, description, price, oldPrice, badge, comingSoon, inStock,
+        "categorySlug": category->slug.current,
+        colors, images
+      }`;
+      allProducts = await window.sanityClient.fetch(prodQuery);
+      
+      applyFiltersAndSort();
+    } catch (err) {
+      console.error("Failed to load store data:", err);
+      const grid = document.getElementById("productGrid");
+      if (grid) grid.innerHTML = '<div class="store-loading">Failed to load products. Please try again later.</div>';
+    }
+  }
+
+  /* ---------- Filtering and Sorting ---------- */
+  function renderFilterBar(categories) {
+    const filterBar = document.getElementById('categoryFilterBar');
+    if (!filterBar) return;
+
+    let html = `<button class="filter-btn active" data-category="all">All</button>`;
+    
+    if (categories && categories.length > 0) {
+      categories.forEach(cat => {
+        html += `<button class="filter-btn" data-category="${cat.slug}">${cat.title}</button>`;
+      });
+    }
+
+    filterBar.innerHTML = html;
+
+    filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCategory = e.target.getAttribute('data-category');
+        applyFiltersAndSort();
+      });
+    });
+  }
+
+  function applyFiltersAndSort() {
+    let filtered = allProducts;
+    
+    // Apply category filter
+    if (currentCategory !== 'all') {
+      filtered = allProducts.filter(p => p.categorySlug === currentCategory);
+    }
+
+    // Apply sort
+    const sortSelect = document.getElementById('productSort');
+    if (sortSelect) {
+      const sortVal = sortSelect.value;
+      if (sortVal === 'price-low') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sortVal === 'price-high') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else {
+        // newest (default, already sorted somewhat by the query, but we can't reliably resort without createdAt here unless we fetch it. 
+        // We'll just rely on the original array order which was fetched by order/createdAt
+        const originalOrderMap = new Map(allProducts.map((p, i) => [p._id, i]));
+        filtered.sort((a, b) => originalOrderMap.get(a._id) - originalOrderMap.get(b._id));
+      }
+    }
+
+    renderProductGrid(filtered);
+  }
+
+  const sortSelect = document.getElementById('productSort');
+  if (sortSelect) {
+    sortSelect.addEventListener('change', applyFiltersAndSort);
+  }
+
   /* ---------- Product grid ---------- */
-  function renderProductGrid() {
+  function renderProductGrid(products) {
     var grid = document.getElementById("productGrid");
     if (!grid) { return; }
 
-    grid.innerHTML = PRODUCTS.map(function (p) {
+    if (!products || products.length === 0) {
+      grid.innerHTML = '<div class="store-loading">No products found.</div>';
+      return;
+    }
+
+    grid.innerHTML = products.map(function (p) {
       var badgeHtml = p.badge
         ? '<span class="product-badge' + (p.comingSoon ? " badge-soon" : "") + '">' + p.badge + "</span>"
         : "";
@@ -152,20 +187,25 @@
         ? '<span class="old-price">' + formatPKR(p.oldPrice) + "</span>"
         : "";
 
-      var btnHtml = p.comingSoon
-        ? '<button class="add-to-cart-btn soon-btn" disabled>Coming Soon</button>'
-        : '<button class="add-to-cart-btn" data-id="' + p.id + '">Add to Cart</button>';
+      var btnHtml = p.comingSoon || !p.inStock
+        ? '<button class="add-to-cart-btn soon-btn" disabled>' + (p.comingSoon ? 'Coming Soon' : 'Out of Stock') + '</button>'
+        : '<button class="add-to-cart-btn" data-id="' + p._id + '">Add to Cart</button>';
+
+      var imgSrc = (p.images && p.images.length > 0) ? window.sanityClient.urlFor(p.images[0], {width: 600, height: 600}) : PLACEHOLDER_PHOTO;
+
+      // Wrap image and title in an a tag to go to product details
+      var productLink = `product.html?slug=${p.slug}`;
 
       return (
         '<div class="product-card reveal' + (p.comingSoon ? " product-card--soon" : "") + '">' +
-          '<div class="product-media">' +
+          '<a href="' + productLink + '" class="product-media">' +
             badgeHtml +
-            '<img src="' + p.img + '" alt="' + p.name + '">' +
-            (p.comingSoon ? '<div class="soon-overlay"><span>Coming Soon</span></div>' : "") +
-          "</div>" +
+            '<img src="' + imgSrc + '" alt="' + p.name + '" loading="lazy">' +
+            (p.comingSoon ? '<div class="soon-overlay"><span>Coming Soon</span></div>' : (!p.inStock ? '<div class="soon-overlay"><span>Out of Stock</span></div>' : '')) +
+          "</a>" +
           '<div class="product-info">' +
-            "<h3>" + p.name + "</h3>" +
-            '<p class="product-desc">' + p.desc + "</p>" +
+            '<a href="' + productLink + '"><h3>' + p.name + '</h3></a>' +
+            '<p class="product-desc">' + p.description + "</p>" +
             '<div class="product-price-row">' +
               '<span class="product-price">' + oldPriceHtml + formatPKR(p.price) + "</span>" +
               btnHtml +
@@ -176,7 +216,10 @@
     }).join("");
 
     grid.querySelectorAll(".add-to-cart-btn:not([disabled])").forEach(function (btn) {
-      btn.addEventListener("click", function () { addToCart(btn.getAttribute("data-id")); });
+      btn.addEventListener("click", function (e) { 
+        e.preventDefault(); 
+        addToCart(btn.getAttribute("data-id")); 
+      });
     });
 
     /* Re-trigger scroll reveal */
@@ -209,33 +252,34 @@
       return;
     }
 
-    itemsWrap.innerHTML = cart.map(function (item) {
-      var product = PRODUCTS.find(function (p) { return p.id === item.id; });
-      if (!product) { return ""; }
+    itemsWrap.innerHTML = cart.map(function (item, index) {
+      var colorText = item.color ? `<span style="font-size:0.75rem; color:#8a8a8a; display:block; margin-bottom:4px;">Color: ${item.color}</span>` : '';
+      
       return (
         '<div class="cart-item">' +
-          '<img src="' + product.img + '" alt="' + product.name + '">' +
+          '<img src="' + item.img + '" alt="' + item.name + '">' +
           '<div class="cart-item-info">' +
-            "<h4>" + product.name + "</h4>" +
-            '<div class="cart-item-price">' + formatPKR(product.price) + "</div>" +
+            "<h4>" + item.name + "</h4>" +
+            colorText + 
+            '<div class="cart-item-price">' + formatPKR(item.price) + "</div>" +
             '<div class="qty-control">' +
-              '<button data-action="dec" data-id="' + product.id + '">&minus;</button>' +
+              '<button data-action="dec" data-index="' + index + '">&minus;</button>' +
               "<span>" + item.qty + "</span>" +
-              '<button data-action="inc" data-id="' + product.id + '">&plus;</button>' +
+              '<button data-action="inc" data-index="' + index + '">&plus;</button>' +
             "</div>" +
-            '<button class="cart-item-remove" data-action="remove" data-id="' + product.id + '">Remove</button>' +
+            '<button class="cart-item-remove" data-action="remove" data-index="' + index + '">Remove</button>' +
           "</div>" +
         "</div>"
       );
     }).join("");
 
     itemsWrap.querySelectorAll("[data-action]").forEach(function (btn) {
-      var id = btn.getAttribute("data-id");
+      var index = parseInt(btn.getAttribute("data-index"), 10);
       var action = btn.getAttribute("data-action");
       btn.addEventListener("click", function () {
-        if (action === "inc")    { updateQty(id, 1); }
-        if (action === "dec")    { updateQty(id, -1); }
-        if (action === "remove") { removeFromCart(id); }
+        if (action === "inc")    { updateQty(index, 1); }
+        if (action === "dec")    { updateQty(index, -1); }
+        if (action === "remove") { removeFromCart(index); }
       });
     });
 
@@ -265,81 +309,13 @@
   if (cartClose)   { cartClose.addEventListener("click",   closeCart); }
   if (cartOverlay) { cartOverlay.addEventListener("click", closeCart); }
 
-  /* ---------- Checkout modal ---------- */
-  var checkoutOverlay     = document.getElementById("checkoutOverlay");
-  var checkoutBtn         = document.getElementById("checkoutBtn");
-  var checkoutClose       = document.getElementById("checkoutClose");
-  var checkoutForm        = document.getElementById("checkoutForm");
-  var checkoutFormStep    = document.getElementById("checkoutFormStep");
-  var checkoutConfirmStep = document.getElementById("checkoutConfirmStep");
-  var orderSummaryBox     = document.getElementById("orderSummaryBox");
-  var orderIdDisplay      = document.getElementById("orderIdDisplay");
-
-  function renderOrderSummary() {
-    if (!orderSummaryBox) { return; }
-    var cart = getCart();
-    var lines = cart.map(function (item) {
-      var product = PRODUCTS.find(function (p) { return p.id === item.id; });
-      if (!product) { return ""; }
-      return (
-        '<div class="order-line">' +
-          "<span>" + product.name + " &times; " + item.qty + "</span>" +
-          "<span>" + formatPKR(product.price * item.qty) + "</span>" +
-        "</div>"
-      );
-    }).join("");
-    var total = '<div class="order-line total"><span>Total</span><span>' + formatPKR(cartSubtotal()) + "</span></div>";
-    orderSummaryBox.innerHTML = lines + total;
-  }
-
-  function openCheckout() {
-    if (!checkoutOverlay) { return; }
-    if (!getCart().length) { return; }
-    renderOrderSummary();
-    checkoutFormStep.style.display    = "";
-    checkoutConfirmStep.style.display = "none";
-    checkoutOverlay.classList.add("active");
-    closeCart();
-  }
-
-  function closeCheckout() {
-    if (checkoutOverlay) { checkoutOverlay.classList.remove("active"); }
-  }
-
-  if (checkoutBtn)   { checkoutBtn.addEventListener("click",   function() { window.location.href = "checkout.html"; }); }
-  if (checkoutClose) { checkoutClose.addEventListener("click", closeCheckout); }
-  if (checkoutOverlay) {
-    checkoutOverlay.addEventListener("click", function (e) {
-      if (e.target === checkoutOverlay) { closeCheckout(); }
-    });
-  }
-
-  function generateOrderId() {
-    var stamp = Date.now().toString(36).toUpperCase();
-    return "ES-" + stamp.slice(-6);
-  }
-
-  if (checkoutForm) {
-    checkoutForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var orderId = generateOrderId();
-      if (orderIdDisplay) { orderIdDisplay.textContent = "Order ID: " + orderId; }
-      checkoutFormStep.style.display    = "none";
-      checkoutConfirmStep.style.display = "";
-      saveCart([]);
-      renderCart();
-    });
-  }
-
-  var continueShoppingBtn = document.getElementById("continueShoppingBtn");
-  if (continueShoppingBtn) {
-    continueShoppingBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      closeCheckout();
-    });
+  /* ---------- Checkout modal handling (legacy removed in favor of separate page) ---------- */
+  var checkoutBtn = document.getElementById("checkoutBtn");
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", function() { window.location.href = "checkout.html"; });
   }
 
   /* ---------- Init ---------- */
-  renderProductGrid();
+  loadStoreData();
   renderCart();
 })();
