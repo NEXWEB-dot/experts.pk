@@ -1081,10 +1081,7 @@ input, textarea, select{ font-family:var(--font-body); }
 
 /* ---- Body: full purple-to-crimson radial glow matching screenshot ---- */
 body {
-  background:
-    radial-gradient(ellipse 80% 60% at 85% 95%, rgba(142,45,226,0.45), transparent 65%),
-    radial-gradient(ellipse 70% 55% at 95% 80%, rgba(205,38,83,0.35), transparent 60%),
-    #000000;
+  background: var(--gradient-glow), var(--color-primary);
   background-attachment: fixed;
 }
 
