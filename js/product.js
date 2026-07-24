@@ -227,9 +227,9 @@
           });
         }
         
-        saveCart(cart);
-        renderCart();
-        openCart();
+        window.expertsCart.saveCart(cart);
+        window.expertsCart.renderCart();
+        window.expertsCart.openCart();
         
         // Reset qty
         quantity = 1;
@@ -238,109 +238,8 @@
     }
   }
 
-  /* ---------- Cart logic (Duplicated from store.js for shared drawer) ---------- */
-  function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } 
-    catch (e) { return []; }
-  }
-  function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    if (window.updateNavCartCount) { window.updateNavCartCount(); }
-  }
-  function updateQty(index, delta) {
-    var cart = getCart();
-    if (!cart[index]) return;
-    cart[index].qty += delta;
-    if (cart[index].qty <= 0) { cart.splice(index, 1); }
-    saveCart(cart);
-    renderCart();
-  }
-  function removeFromCart(index) {
-    var cart = getCart();
-    cart.splice(index, 1);
-    saveCart(cart);
-    renderCart();
-  }
-  function cartSubtotal() {
-    var cart = getCart();
-    return cart.reduce(function (sum, item) { return sum + (item.price * item.qty); }, 0);
-  }
-  
-  function renderCart() {
-    var itemsWrap = document.getElementById("cartItems");
-    var subtotalEl = document.getElementById("cartSubtotal");
-    if (!itemsWrap || !subtotalEl) { return; }
-
-    var cart = getCart();
-
-    if (!cart.length) {
-      itemsWrap.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
-      subtotalEl.textContent = formatPKR(0);
-      return;
-    }
-
-    itemsWrap.innerHTML = cart.map(function (item, index) {
-      var colorText = item.color ? `<span style="font-size:0.75rem; color:#8a8a8a; display:block; margin-bottom:4px;">Color: ${item.color}</span>` : '';
-      
-      return (
-        '<div class="cart-item">' +
-          '<img src="' + item.img + '" alt="' + item.name + '">' +
-          '<div class="cart-item-info">' +
-            "<h4>" + item.name + "</h4>" +
-            colorText + 
-            '<div class="cart-item-price">' + formatPKR(item.price) + "</div>" +
-            '<div class="qty-control">' +
-              '<button data-action="dec" data-index="' + index + '">&minus;</button>' +
-              "<span>" + item.qty + "</span>" +
-              '<button data-action="inc" data-index="' + index + '">&plus;</button>' +
-            "</div>" +
-            '<button class="cart-item-remove" data-action="remove" data-index="' + index + '">Remove</button>' +
-          "</div>" +
-        "</div>"
-      );
-    }).join("");
-
-    itemsWrap.querySelectorAll("[data-action]").forEach(function (btn) {
-      var index = parseInt(btn.getAttribute("data-index"), 10);
-      var action = btn.getAttribute("data-action");
-      btn.addEventListener("click", function () {
-        if (action === "inc")    { updateQty(index, 1); }
-        if (action === "dec")    { updateQty(index, -1); }
-        if (action === "remove") { removeFromCart(index); }
-      });
-    });
-
-    subtotalEl.textContent = formatPKR(cartSubtotal());
-  }
-
-  var cartDrawer  = document.getElementById("cartDrawer");
-  var cartOverlay = document.getElementById("cartOverlay");
-  var cartToggle  = document.getElementById("cartToggle");
-  var cartClose   = document.getElementById("cartClose");
-
-  function openCart() {
-    if (cartDrawer && cartOverlay) {
-      cartDrawer.classList.add("active");
-      cartOverlay.classList.add("active");
-    }
-  }
-  function closeCart() {
-    if (cartDrawer && cartOverlay) {
-      cartDrawer.classList.remove("active");
-      cartOverlay.classList.remove("active");
-    }
-  }
-
-  if (cartToggle)  { cartToggle.addEventListener("click",  function () { renderCart(); openCart(); }); }
-  if (cartClose)   { cartClose.addEventListener("click",   closeCart); }
-  if (cartOverlay) { cartOverlay.addEventListener("click", closeCart); }
-
-  var checkoutBtn = document.getElementById("checkoutBtn");
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener("click", function() { window.location.href = "checkout.html"; });
-  }
-
   /* ---------- Init ---------- */
   loadProduct();
-  renderCart();
+  window.expertsCart.renderCart();
 })();
+

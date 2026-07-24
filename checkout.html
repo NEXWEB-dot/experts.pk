@@ -38,10 +38,10 @@
     </ul>
 
     <div class="nav-actions">
-      <a href="store.html" class="nav-cart" aria-label="View cart">
-        Cart
+            <button class="nav-cart" id="cartToggle" aria-label="Open cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <span class="cart-count" id="navCartCount">0</span>
-      </a>
+      </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <!-- SVG injected by JS -->
       </button>
@@ -273,5 +273,24 @@
 <script src="js/sanity.js"></script>
 <script src="js/main.js"></script>
 <script src="js/checkout.js"></script>
+<!-- ===================== Cart Drawer ===================== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <!-- injected by JS -->
+  </div>
+  <div class="cart-footer">
+    <div class="cart-subtotal-row">
+      <span>Subtotal</span>
+      <span id="cartSubtotal">PKR 0</span>
+    </div>
+    <button class="btn-submit" id="checkoutBtn">Proceed to Checkout</button>
+  </div>
+</aside>
 </body>
 </html>
+
