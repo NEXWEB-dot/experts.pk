@@ -9,6 +9,8 @@
   /* Colors - Light Mode (Default) */
   --color-primary: #ffffff;         /* dominant light surface */
   --color-secondary: #7c3aed;       /* purple CTA / submit / prices */
+  --color-secondary-hover: #6d28d9; /* darker purple for hover */
+  --color-secondary-text: #ffffff;  /* text on secondary color */
   --color-text-on-dark: #1a1a2e;    /* headings / body */
   --color-text-muted: #6b7280;      /* muted / secondary text */
   --color-accent-brand: #cd2653;    /* crimson */
@@ -54,6 +56,8 @@
   /* Colors - Dark Mode (Original) */
   --color-primary: #000000;         
   --color-secondary: #fabe1a;       
+  --color-secondary-hover: #e6ad17;
+  --color-secondary-text: #111111;
   --color-text-on-dark: #ffffff;    
   --color-text-muted: #3c3c3c;      
   --color-accent-brand: #cd2653;    
@@ -159,13 +163,13 @@ input, textarea, select{ font-family:var(--font-body); }
 
 .btn-gold{
   background:var(--color-secondary);
-  color:#111;
+  color:var(--color-secondary-text);
 }
-.btn-gold:hover{ background:#e6ad17; }
+.btn-gold:hover{ background:var(--color-secondary-hover); }
 
 .btn-submit{
   background:var(--color-secondary);
-  color:#111;
+  color:var(--color-secondary-text);
   height:var(--submit-btn-height);
   border-radius:var(--radius-button);
   padding:0 2em;
@@ -175,7 +179,7 @@ input, textarea, select{ font-family:var(--font-body); }
   letter-spacing:0.5px;
   transition:background .25s ease;
 }
-.btn-submit:hover{ background:#e6ad17; }
+.btn-submit:hover{ background:var(--color-secondary-hover); }
 .btn-submit:focus-visible{
   outline:none;
   box-shadow:0 0 0 2px #000, 0 0 0 4px #ffffff;
@@ -1140,7 +1144,7 @@ body {
 
 /* ---- Buttons: glow on hover ---- */
 .btn-gold:hover {
-  background: #e6ad17;
+  background: var(--color-secondary-hover);
   box-shadow: 0 0 22px rgba(250,190,26,0.45);
   transform: translateY(-2px);
 }
