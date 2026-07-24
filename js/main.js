@@ -102,6 +102,19 @@
     }
   }
 
+  /* Migrate: clear stale cart items from pre-Sanity era (numeric ids vs Sanity _id) */
+  (function migrateCart() {
+    var cart = getCart();
+    if (!cart.length) return;
+    // Old hardcoded items used numeric ids like 1,2,3... Sanity ids look like "abc123def"
+    var hasStale = cart.some(function(item) {
+      return typeof item.id === 'number' || (!item.id) || (typeof item.id === 'string' && /^\d+$/.test(item.id));
+    });
+    if (hasStale) {
+      localStorage.removeItem("expertsStoreCart");
+    }
+  })();
+
   function updateNavCartCount() {
     var cart = getCart();
     var count = cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
@@ -119,7 +132,7 @@
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
       contactForm.innerHTML =
-        '<p style="color:#fabe1a; font-family:var(--font-heading); font-size:0.95rem;">Thank you — your message has been received. We will get back to you shortly.</p>';
+        '<p style="color:var(--color-secondary); font-family:var(--font-heading); font-size:0.95rem;">Thank you — your message has been received. We will get back to you shortly.</p>';
     });
   }
 })();

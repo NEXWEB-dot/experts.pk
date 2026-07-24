@@ -8,9 +8,9 @@
 :root {
   /* Colors - Light Mode (Default) */
   --color-primary: #ffffff;         /* dominant light surface */
-  --color-secondary: #7c3aed;       /* purple CTA / submit / prices */
-  --color-secondary-hover: #6d28d9; /* darker purple for hover */
-  --color-secondary-text: #ffffff;  /* text on secondary color */
+  --color-secondary: #fabe1a;       /* gold CTA / submit / prices */
+  --color-secondary-hover: #e6ad17; /* darker gold for hover */
+  --color-secondary-text: #111111;  /* text on secondary color */
   --color-text-on-dark: #1a1a2e;    /* headings / body */
   --color-text-muted: #6b7280;      /* muted / secondary text */
   --color-accent-brand: #cd2653;    /* crimson */
