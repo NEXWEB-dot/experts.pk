@@ -96,7 +96,10 @@
   /* ---------- Cart badge sync (shown on every page, incl. Home) ---------- */
   function getCart() {
     try {
-      return JSON.parse(localStorage.getItem("expertsStoreCart") || "[]");
+      var val = localStorage.getItem("expertsStoreCart");
+      if (!val) return [];
+      var parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       return [];
     }

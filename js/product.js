@@ -29,7 +29,10 @@
   /* ---------- Cart storage ---------- */
   function getCart() {
     try {
-      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+      var val = localStorage.getItem(CART_KEY);
+      if (!val) return [];
+      var parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       return [];
     }

@@ -10,8 +10,14 @@
   function formatPKR(n) { return "PKR " + n.toLocaleString("en-PK"); }
 
   function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-    catch (e) { return []; }
+    try {
+      var val = localStorage.getItem(CART_KEY);
+      if (!val) return [];
+      var parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
   }
   function saveCart(cart) {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
