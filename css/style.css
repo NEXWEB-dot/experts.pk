@@ -50,6 +50,7 @@
   --submit-btn-height: 52px;
   --card-bg: #f8f7ff;
   --card-border: 1px solid var(--color-border);
+  --input-bg: #ffffff;
 
   /* Surfaces & Glass */
   --surface-glass: rgba(255,255,255,0.6);
@@ -86,6 +87,7 @@
   /* Components */
   --btn-bg: #32373c;
   --card-bg: var(--color-primary);
+  --input-bg: #0d0d0d;
 
   /* Surfaces & Glass */
   --surface-glass: rgba(255,255,255,0.025);
@@ -488,12 +490,19 @@ input, textarea, select{ font-family:var(--font-body); }
 .form-field select{
   width:100%;
   height:38px;
-  background:#0d0d0d;
+  background:var(--input-bg);
   border:1px solid var(--color-border);
   border-radius:6px;
   color:var(--color-text-on-dark);
   padding:0 14px;
   font-size:0.95rem;
+}
+.form-field input:-webkit-autofill,
+.form-field input:-webkit-autofill:hover, 
+.form-field input:-webkit-autofill:focus, 
+.form-field input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--color-text-on-dark) !important;
 }
 .form-field textarea{ height:auto; padding:12px 14px; resize:vertical; min-height:110px; }
 .form-field input:focus,

@@ -70,6 +70,7 @@
     successState.style.display = "none";
 
     var subtotal = 0;
+    window.currentSubtotal = 0;
     
     // Render Step 1 editable cart
     cartItemsStep1.innerHTML = cart.map(function (item, index) {
@@ -128,11 +129,52 @@
     }).join("");
 
     /* Totals */
-    var total = subtotal; // free shipping
+    window.currentSubtotal = subtotal;
+    updateShippingDisplay();
+  }
+
+  function calculateShipping(cityVal, subtotal) {
+    if (!cityVal) {
+      return { text: "Enter city for shipping", cost: 0 };
+    }
+    var cityLower = cityVal.toLowerCase().trim();
+    if (cityLower.includes("karachi")) {
+      if (subtotal >= 2000) {
+        return { text: "FREE", cost: 0 };
+      } else {
+        return { text: "PKR 300 - 500 (distance based)", cost: 300 };
+      }
+    } else {
+      return { text: "Standard courier rates applied", cost: 0 };
+    }
+  }
+
+  function updateShippingDisplay() {
+    if (!totalsEl) return;
+    var cityInput = document.getElementById("city");
+    var cityVal = cityInput ? cityInput.value : "";
+    var subtotal = window.currentSubtotal || 0;
+    
+    var shippingInfo = calculateShipping(cityVal, subtotal);
+    var total = subtotal + shippingInfo.cost;
+    
+    var shippingHtml = shippingInfo.text === "FREE" 
+      ? '<span class="free-tag">FREE</span>' 
+      : '<span style="font-size:0.85rem; text-align:right;">' + shippingInfo.text + '</span>';
+
+    var totalText = formatPKR(total) + (shippingInfo.cost === 0 && shippingInfo.text !== "FREE" && shippingInfo.text !== "Enter city for shipping" ? " + Shipping" : "");
+
     totalsEl.innerHTML =
       '<div class="summary-row"><span>Subtotal</span><span>' + formatPKR(subtotal) + '</span></div>' +
-      '<div class="summary-row"><span>Shipping</span><span class="free-tag">FREE</span></div>' +
-      '<div class="summary-row summary-total"><span>Total</span><span>' + formatPKR(total) + '</span></div>';
+      '<div class="summary-row"><span>Shipping</span>' + shippingHtml + '</div>' +
+      '<div class="summary-row summary-total"><span>Total</span><span>' + totalText + '</span></div>';
+  }
+
+  var cityInputField = document.getElementById("city");
+  if (cityInputField) {
+    cityInputField.addEventListener("input", function() {
+      updateShippingDisplay();
+    });
   }
 
   /* ---------- Step Navigation ---------- */
@@ -158,6 +200,10 @@
       content.classList.remove('active');
     });
     document.getElementById('step' + stepNumber).classList.add('active');
+    
+    if (stepNumber === 2 || stepNumber === 3) {
+       updateShippingDisplay();
+    }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -217,8 +263,13 @@
           orderText += `- ${formatPKR(item.price * item.qty)}%0A`;
         });
         
-        var totalAmount = cartSubtotal();
-        orderText += `%0A*Total Amount:* ${formatPKR(totalAmount)} (COD)%0A`;
+        var subtotal = cart.reduce(function (sum, item) { return sum + (item.price * item.qty); }, 0);
+        var shippingInfo = calculateShipping(cityVal, subtotal);
+        var totalAmount = subtotal + shippingInfo.cost;
+        
+        orderText += `%0A*Subtotal:* ${formatPKR(subtotal)}%0A`;
+        orderText += `*Shipping:* ${shippingInfo.text}%0A`;
+        orderText += `*Total Amount:* ${formatPKR(totalAmount)} ${shippingInfo.cost === 0 && shippingInfo.text !== "FREE" ? "+ Shipping" : ""} (COD)%0A`;
 
         // Redirect to WhatsApp
         var whatsappNumber = "923001234567"; // Placeholder, the user can change this
