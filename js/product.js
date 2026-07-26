@@ -26,6 +26,15 @@
     return params.get('slug');
   }
 
+  /* ---------- Cart storage ---------- */
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    } catch (e) {
+      return [];
+    }
+  }
+
   /* ---------- Fetch Product ---------- */
   async function loadProduct() {
     const slug = getSlugFromUrl();
