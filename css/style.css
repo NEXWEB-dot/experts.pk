@@ -1078,8 +1078,8 @@ input, textarea, select{ font-family:var(--font-body); }
   }
   .nav-menu.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
   .nav-menu li{ margin-right:0; width:100%; padding:12px 0; text-align:center; }
-  .nav-wrap{ position:relative; flex-wrap: nowrap; justify-content: space-between; }
-  .nav-toggle{ display:block; order:-1; flex: 1; }
+  .nav-wrap{ position:relative; flex-wrap: nowrap; justify-content: space-between; align-items: center; }
+  .nav-toggle{ display:block; order:-1; }
   
   /* Prevent logo overlap on very small screens */
   .logo{
@@ -1090,7 +1090,7 @@ input, textarea, select{ font-family:var(--font-body); }
     font-size: 1rem;
     white-space: nowrap;
   }
-  .nav-actions{ margin-left:0; flex: 1; display: flex; justify-content: flex-end; }
+  .nav-actions{ margin-left:0; display: flex; justify-content: flex-end; align-items: center; }
   
   .nav-cart{ margin-left:auto; margin-right:8px; gap: 4px; font-size: 0.85rem; }
   .nav-cart .cart-count { top: -6px; right: -10px; }
