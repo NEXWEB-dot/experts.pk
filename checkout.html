@@ -41,6 +41,70 @@
 </script>
 
 <link rel="stylesheet" href="css/style.css">
+
+<!-- Premium order-success animation (scoped, overrides any confetti-era styles) -->
+<style>
+  #checkoutSuccess .success-card { opacity: 0; transform: translateY(18px) scale(0.97); }
+  #checkoutSuccess .success-card.is-animating { animation: successCardIn .7s cubic-bezier(.16,1,.3,1) forwards; }
+  @keyframes successCardIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  #checkoutSuccess .success-check-ring { position: relative; }
+  #checkoutSuccess .success-check-ring::before {
+    content: ""; position: absolute; inset: -14px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(250,190,26,.35) 0%, rgba(250,190,26,0) 70%);
+    opacity: 0; transform: scale(.6); pointer-events: none;
+  }
+  #checkoutSuccess .success-card.is-animating .success-check-ring::before {
+    animation: successGlow 1.3s cubic-bezier(.16,1,.3,1) .15s forwards;
+  }
+  @keyframes successGlow {
+    0%   { opacity: 0;   transform: scale(.6); }
+    35%  { opacity: .9;  transform: scale(1.05); }
+    100% { opacity: 0;   transform: scale(1.5); }
+  }
+
+  #checkoutSuccess .success-circle-anim { stroke-dashoffset: 163.36; }
+  #checkoutSuccess .success-card.is-animating .success-circle-anim {
+    animation: successCircleDraw .7s cubic-bezier(.65,0,.35,1) .1s forwards;
+  }
+  @keyframes successCircleDraw { to { stroke-dashoffset: 0; } }
+
+  #checkoutSuccess .success-check-anim { stroke-dasharray: 32; stroke-dashoffset: 32; }
+  #checkoutSuccess .success-card.is-animating .success-check-anim {
+    animation: successCheckDraw .45s ease-out .75s forwards;
+  }
+  @keyframes successCheckDraw { to { stroke-dashoffset: 0; } }
+
+  #checkoutSuccess .success-card > h2,
+  #checkoutSuccess .success-card > p,
+  #checkoutSuccess .success-order-id,
+  #checkoutSuccess .success-details,
+  #checkoutSuccess .email-resend-section,
+  #checkoutSuccess .success-card > .btn-outline {
+    opacity: 0; transform: translateY(8px);
+  }
+  #checkoutSuccess .success-card.is-animating > h2                 { animation: successFadeUp .5s ease-out .50s forwards; }
+  #checkoutSuccess .success-card.is-animating > p                  { animation: successFadeUp .5s ease-out .58s forwards; }
+  #checkoutSuccess .success-card.is-animating .success-order-id    { animation: successFadeUp .5s ease-out .66s forwards; }
+  #checkoutSuccess .success-card.is-animating .success-details     { animation: successFadeUp .5s ease-out .74s forwards; }
+  #checkoutSuccess .success-card.is-animating .email-resend-section{ animation: successFadeUp .5s ease-out .86s forwards; }
+  #checkoutSuccess .success-card.is-animating > .btn-outline        { animation: successFadeUp .5s ease-out .94s forwards; }
+  @keyframes successFadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* one-time gold sheen sweeping across the order ID */
+  #checkoutSuccess .success-order-id { position: relative; overflow: hidden; }
+  #checkoutSuccess .success-card.is-animating .success-order-id::after {
+    content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(115deg, transparent, rgba(250,190,26,.5), transparent);
+    animation: successSheen 1s ease-out 1.05s forwards;
+  }
+  @keyframes successSheen { to { left: 130%; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    #checkoutSuccess .success-card,
+    #checkoutSuccess .success-card * { animation: none !important; opacity: 1 !important; transform: none !important; }
+  }
+</style>
 </head>
 <body>
 
@@ -368,7 +432,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               Email Confirmation
             </h4>
-            <p class="email-resend-desc">Receive your order details by email.</p>
+            <p class="email-resend-desc">Your order confirmation is sent automatically. Didn't get it? Resend below.</p>
             <div class="email-resend-form">
               <input type="email" id="resendEmailInput" class="email-resend-input" placeholder="your@email.com" autocomplete="email">
               <button type="button" id="resendEmailBtn" class="btn btn-gold email-resend-btn">Send</button>
@@ -436,7 +500,6 @@
   </div>
 </aside>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="js/sanity.js"></script>
 <script src="js/main.js"></script>
 <script src="js/checkout.js"></script>

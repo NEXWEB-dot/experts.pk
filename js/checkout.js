@@ -349,30 +349,23 @@
           bank:      "Bank Transfer (details on WhatsApp)"
         };
         var paymentLabel = paymentLabelsMap[selectedPayment] || "Cash on Delivery";
+        var isCod = selectedPayment === "cod";
 
-        /* ---- Build WhatsApp message ---- */
-        var msg = "*New Order: " + orderId + "*%0A%0A";
-        msg += "*Customer:*%0A";
-        msg += "Name: " + nameVal + "%0A";
-        msg += "Phone: " + phoneVal + "%0A";
-        if (emailVal) { msg += "Email: " + emailVal + "%0A"; }
-        msg += "Address: " + addressVal + ", " + cityVal + "%0A";
-        if (notesVal) { msg += "Notes: " + notesVal + "%0A"; }
-        msg += "%0A*Items:*%0A";
-        cart.forEach(function (item) {
-          msg += "- " + item.qty + "x " + item.name;
-          if (item.color) { msg += " (" + item.color + ")"; }
-          msg += " — " + formatPKR(item.price * item.qty) + "%0A";
-        });
-        msg += "%0A*Subtotal:* " + formatPKR(subtotal) + "%0A";
-        msg += "*Shipping:* " + shipping.text + "%0A";
-        msg += "*Total:* " + formatPKR(totalAmt) + "%0A";
-        msg += "*Payment:* " + paymentLabel + "%0A";
-        if (selectedPayment === "easypaisa" || selectedPayment === "jazzcash") {
-          msg += "%0A⚠️ Please share your payment screenshot on WhatsApp to confirm the order.";
-        }
-
-        var whatsappUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + msg;
+        /* ---- Store order data (used by email send + WhatsApp msg) ---- */
+        window.__pendingOrder = {
+          orderId:   orderId,
+          name:      nameVal,
+          phone:     phoneVal,
+          email:     emailVal,
+          address:   addressVal,
+          city:      cityVal,
+          notes:     notesVal,
+          cart:      cart,
+          subtotal:  subtotal,
+          shipping:  shipping,
+          total:     totalAmt,
+          payment:   selectedPayment
+        };
 
         /* ---- Success screen ---- */
         var paymentMethodDisplay = {
@@ -386,41 +379,55 @@
 
         var detailsHtml =
           '<p>Delivering to <strong>' + nameVal + '</strong> in <strong>' + cityVal + '</strong></p>' +
-          '<p style="font-size:0.85rem;color:var(--color-text-muted);margin-top:6px;">Payment: ' + (paymentMethodDisplay[selectedPayment] || paymentMethodDisplay.cod) + '</p>' +
-          '<div style="margin-top:20px;">' +
-            '<a href="' + whatsappUrl + '" target="_blank" rel="noopener" class="btn btn-gold whatsapp-cta">' +
-              '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;vertical-align:middle;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>' +
-              'Send Order via WhatsApp' +
-            '</a>' +
-            '<p style="font-size:0.8rem;color:var(--color-text-muted);margin-top:10px;">Click above to confirm your order on WhatsApp.</p>' +
-          '</div>';
+          '<p style="font-size:0.85rem;color:var(--color-text-muted);margin-top:6px;">Payment: ' + (paymentMethodDisplay[selectedPayment] || paymentMethodDisplay.cod) + '</p>';
+
+        var whatsappUrl = null;
+
+        if (isCod) {
+          /* ---- COD → confirmation email only, NO WhatsApp ---- */
+          detailsHtml += '<p style="font-size:0.85rem;color:var(--color-text-muted);margin-top:10px;">We\'re emailing you an order confirmation now.</p>';
+        } else {
+          /* ---- Easypaisa / JazzCash / Bank → confirm via WhatsApp only ---- */
+          var msg = "*New Order: " + orderId + "*%0A%0A";
+          msg += "*Customer:*%0A";
+          msg += "Name: " + nameVal + "%0A";
+          msg += "Phone: " + phoneVal + "%0A";
+          if (emailVal) { msg += "Email: " + emailVal + "%0A"; }
+          msg += "Address: " + addressVal + ", " + cityVal + "%0A";
+          if (notesVal) { msg += "Notes: " + notesVal + "%0A"; }
+          msg += "%0A*Items:*%0A";
+          cart.forEach(function (item) {
+            msg += "- " + item.qty + "x " + item.name;
+            if (item.color) { msg += " (" + item.color + ")"; }
+            msg += " — " + formatPKR(item.price * item.qty) + "%0A";
+          });
+          msg += "%0A*Subtotal:* " + formatPKR(subtotal) + "%0A";
+          msg += "*Shipping:* " + shipping.text + "%0A";
+          msg += "*Total:* " + formatPKR(totalAmt) + "%0A";
+          msg += "*Payment:* " + paymentLabel + "%0A";
+          if (selectedPayment === "easypaisa" || selectedPayment === "jazzcash") {
+            msg += "%0A⚠️ Please share your payment screenshot on WhatsApp to confirm the order.";
+          }
+
+          whatsappUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + msg;
+
+          detailsHtml +=
+            '<div style="margin-top:20px;">' +
+              '<a href="' + whatsappUrl + '" target="_blank" rel="noopener" class="btn btn-gold whatsapp-cta">' +
+                '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;vertical-align:middle;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>' +
+                'Send Order via WhatsApp' +
+              '</a>' +
+              '<p style="font-size:0.8rem;color:var(--color-text-muted);margin-top:10px;">Click above to confirm your order on WhatsApp.</p>' +
+            '</div>';
+        }
 
         successDetails.innerHTML = detailsHtml;
 
-        /* Show email resend section for COD only */
+        /* Email confirmation section — COD only, sent automatically via Resend */
         var emailResendSection = document.getElementById("emailResendSection");
         if (emailResendSection) {
-          if (selectedPayment === "cod") {
-            /* Pre-fill email if provided */
-            var emailInput = document.getElementById("resendEmailInput");
-            if (emailInput && emailVal) { emailInput.value = emailVal; }
-            emailResendSection.style.display = "";
-
-            /* Store order data for email send */
-            window.__pendingOrder = {
-              orderId:   orderId,
-              name:      nameVal,
-              phone:     phoneVal,
-              email:     emailVal,
-              address:   addressVal,
-              city:      cityVal,
-              notes:     notesVal,
-              cart:      cart,
-              subtotal:  subtotal,
-              shipping:  shipping,
-              total:     totalAmt,
-              payment:   selectedPayment
-            };
+          if (isCod) {
+            autoSendConfirmationEmail(window.__pendingOrder);
           } else {
             emailResendSection.style.display = "none";
           }
@@ -431,72 +438,112 @@
         layout.style.display       = "none";
         successState.style.display = "";
 
-        /* Premium Confetti Animation */
-        if (window.confetti) {
-          var count = 200;
-          var defaults = { origin: { y: 0.6 }, colors: ['#fabe1a', '#ffffff', '#25D366'] };
-          function fire(particleRatio, opts) {
-            confetti(Object.assign({}, defaults, opts, {
-              particleCount: Math.floor(count * particleRatio)
-            }));
-          }
-          fire(0.25, { spread: 26, startVelocity: 55 });
-          fire(0.2, { spread: 60 });
-          fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-          fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-          fire(0.1, { spread: 120, startVelocity: 45 });
-        }
+        /* Premium success animation (replaces confetti) */
+        playSuccessAnimation();
 
         /* Clear cart */
         saveCart([]);
 
-        /* Auto-open WhatsApp */
-        window.open(whatsappUrl, "_blank");
+        /* Auto-open WhatsApp — online payment methods only, never for COD */
+        if (whatsappUrl) {
+          window.open(whatsappUrl, "_blank");
+        }
       }, 800);
     });
   }
 
   /* ========================================================
-     EMAIL RESEND (COD only — backend API)
+     EMAIL CONFIRMATION (COD only — sent via Resend backend)
      ======================================================== */
+  function sendOrderEmail(orderData) {
+    return fetch(EMAIL_API_URL, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(orderData)
+    }).then(function (res) {
+      if (!res.ok) { throw new Error("Server error " + res.status); }
+      return res;
+    });
+  }
+
+  function setEmailStatus(text, kind) {
+    var statusEl = document.getElementById("emailResendStatus");
+    if (!statusEl) return;
+    statusEl.textContent = text;
+    statusEl.className = "email-resend-status" + (kind ? " " + kind : "");
+  }
+
+  /* Fires automatically the moment a COD order is placed */
+  function autoSendConfirmationEmail(orderData) {
+    var section    = document.getElementById("emailResendSection");
+    var resendBtn  = document.getElementById("resendEmailBtn");
+    var emailInput = document.getElementById("resendEmailInput");
+
+    if (section) { section.style.display = ""; }
+
+    if (!orderData.email) {
+      /* No email captured at step 2 — ask for one so we can send confirmation */
+      setEmailStatus("Enter your email to receive an order confirmation.", "");
+      return;
+    }
+
+    if (emailInput) { emailInput.value = orderData.email; }
+    if (resendBtn)  { resendBtn.disabled = true; resendBtn.textContent = "Sending…"; }
+    setEmailStatus("Sending your confirmation email…", "sending");
+
+    sendOrderEmail(orderData)
+      .then(function () {
+        setEmailStatus("✓ Confirmation email sent to " + orderData.email, "success");
+        if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = "Resend"; }
+      })
+      .catch(function () {
+        setEmailStatus("Couldn't send automatically — tap Send to retry.", "error");
+        if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = "Send"; }
+      });
+  }
+
+  /* Manual send/resend button — fallback if auto-send failed or email was missing */
   var resendBtn = document.getElementById("resendEmailBtn");
   if (resendBtn) {
     resendBtn.addEventListener("click", function () {
-      var emailInput  = document.getElementById("resendEmailInput");
-      var statusEl    = document.getElementById("emailResendStatus");
+      var emailInput = document.getElementById("resendEmailInput");
       var email = emailInput ? emailInput.value.trim() : "";
 
       if (!email || !email.includes("@")) {
-        if (statusEl) { statusEl.textContent = "Please enter a valid email address."; statusEl.className = "email-resend-status error"; }
+        setEmailStatus("Please enter a valid email address.", "error");
         return;
       }
 
       resendBtn.disabled = true;
       resendBtn.textContent = "Sending…";
-      if (statusEl) { statusEl.textContent = ""; statusEl.className = "email-resend-status"; }
+      setEmailStatus("Sending your confirmation email…", "sending");
 
       var orderData = window.__pendingOrder || {};
       orderData.email = email;
 
-      fetch(EMAIL_API_URL, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(orderData)
-      })
-      .then(function (res) {
-        if (res.ok) {
-          if (statusEl) { statusEl.textContent = "✓ Confirmation email sent to " + email; statusEl.className = "email-resend-status success"; }
-          resendBtn.textContent = "Sent ✓";
-        } else {
-          throw new Error("Server error");
-        }
-      })
-      .catch(function () {
-        if (statusEl) { statusEl.textContent = "Failed to send. Please try again."; statusEl.className = "email-resend-status error"; }
-        resendBtn.disabled = false;
-        resendBtn.textContent = "Send";
-      });
+      sendOrderEmail(orderData)
+        .then(function () {
+          setEmailStatus("✓ Confirmation email sent to " + email, "success");
+          resendBtn.textContent = "Resend";
+          resendBtn.disabled = false;
+        })
+        .catch(function () {
+          setEmailStatus("Failed to send. Please try again.", "error");
+          resendBtn.disabled = false;
+          resendBtn.textContent = "Send";
+        });
     });
+  }
+
+  /* ========================================================
+     PREMIUM SUCCESS ANIMATION (replaces canvas-confetti burst)
+     ======================================================== */
+  function playSuccessAnimation() {
+    var card = document.querySelector("#checkoutSuccess .success-card");
+    if (!card) return;
+    card.classList.remove("is-animating");
+    void card.offsetWidth; /* force reflow so the animation restarts every order */
+    card.classList.add("is-animating");
   }
 
   /* ========================================================
