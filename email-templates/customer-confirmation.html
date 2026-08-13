@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation — Experts Store</title>
+  <!--[if mso]>
+  <noscript>
+    <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    /* ---- Reset ---- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f4f4f7; font-family: 'Segoe UI', Arial, Helvetica, sans-serif; color: #1a1a2e; -webkit-text-size-adjust: 100%; }
+    table { border-collapse: collapse; width: 100%; }
+    img { border: 0; display: block; max-width: 100%; }
+    a { color: #fabe1a; text-decoration: none; }
+
+    /* ---- Wrapper ---- */
+    .email-wrapper { background: #f4f4f7; padding: 40px 0; }
+    .email-container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+    /* ---- Header ---- */
+    .email-header { background: #111111; padding: 36px 40px; text-align: center; }
+    .email-logo { font-family: 'Courier New', monospace; font-size: 20px; font-weight: 700; letter-spacing: 3px; color: #ffffff; margin-bottom: 6px; }
+    .email-logo span { color: #fabe1a; }
+    .email-tagline { font-size: 11px; color: #8a8a8a; letter-spacing: 2px; text-transform: uppercase; }
+
+    /* ---- Hero Banner ---- */
+    .email-hero { background: linear-gradient(135deg, #fabe1a 0%, #e6ad17 100%); padding: 40px; text-align: center; }
+    .email-hero-icon { font-size: 48px; margin-bottom: 16px; }
+    .email-hero h1 { font-size: 26px; font-weight: 700; color: #111111; margin-bottom: 8px; }
+    .email-hero p { font-size: 15px; color: #333333; }
+
+    /* ---- Body ---- */
+    .email-body { padding: 40px; }
+    .greeting { font-size: 16px; color: #1a1a2e; margin-bottom: 24px; line-height: 1.6; }
+
+    /* ---- Order ID ---- */
+    .order-id-box { background: #f8f7ff; border: 1px solid #e5e5f0; border-radius: 10px; padding: 20px 24px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; }
+    .order-id-label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+    .order-id-value { font-size: 18px; font-weight: 700; color: #fabe1a; font-family: 'Courier New', monospace; letter-spacing: 1px; }
+
+    /* ---- Section Title ---- */
+    .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #6b7280; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f5; }
+
+    /* ---- Order Items ---- */
+    .order-items { margin-bottom: 28px; }
+    .order-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #f0f0f5; }
+    .order-item:last-child { border-bottom: none; }
+    .item-details .item-name { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+    .item-details .item-meta { font-size: 12px; color: #6b7280; margin-top: 3px; }
+    .item-price { font-size: 14px; font-weight: 700; color: #1a1a2e; white-space: nowrap; padding-left: 16px; }
+
+    /* ---- Totals ---- */
+    .order-totals { background: #f8f7ff; border-radius: 10px; padding: 20px 24px; margin-bottom: 28px; }
+    .total-row { display: flex; justify-content: space-between; font-size: 14px; color: #6b7280; margin-bottom: 10px; }
+    .total-row:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px solid #e5e5f0; font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .total-row:last-child span:last-child { color: #fabe1a; }
+
+    /* ---- Delivery Info ---- */
+    .delivery-info { margin-bottom: 28px; }
+    .info-row { display: flex; gap: 12px; margin-bottom: 10px; }
+    .info-label { font-size: 13px; color: #6b7280; min-width: 90px; }
+    .info-value { font-size: 13px; color: #1a1a2e; font-weight: 500; }
+
+    /* ---- Payment Badge ---- */
+    .payment-badge { display: inline-flex; align-items: center; gap: 8px; background: #111111; color: #fabe1a; padding: 8px 16px; border-radius: 99px; font-size: 13px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 28px; }
+
+    /* ---- COD Notice ---- */
+    .cod-notice { background: #fffbea; border: 1px solid #fabe1a; border-radius: 10px; padding: 18px 20px; margin-bottom: 28px; }
+    .cod-notice p { font-size: 13px; color: #7a6000; line-height: 1.6; }
+    .cod-notice strong { color: #5a4500; }
+
+    /* ---- CTA Button ---- */
+    .cta-btn { display: block; background: #fabe1a; color: #111111; text-align: center; padding: 16px 32px; border-radius: 99px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; margin: 0 auto 28px; max-width: 240px; }
+
+    /* ---- Trust Bar ---- */
+    .trust-bar { border-top: 1px solid #f0f0f5; padding-top: 24px; margin-bottom: 28px; }
+    .trust-bar table { width: 100%; }
+    .trust-item { text-align: center; padding: 0 8px; }
+    .trust-item .icon { font-size: 24px; margin-bottom: 8px; }
+    .trust-item .label { font-size: 11px; color: #6b7280; }
+
+    /* ---- Footer ---- */
+    .email-footer { background: #111111; padding: 28px 40px; text-align: center; }
+    .footer-links { margin-bottom: 16px; }
+    .footer-links a { color: #8a8a8a; font-size: 12px; margin: 0 10px; text-decoration: none; }
+    .footer-links a:hover { color: #fabe1a; }
+    .footer-copy { font-size: 11px; color: #555555; line-height: 1.6; }
+    .footer-copy a { color: #fabe1a; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 600px) {
+      .email-body { padding: 24px; }
+      .email-header { padding: 28px 24px; }
+      .email-hero { padding: 28px 24px; }
+      .order-id-box { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .email-footer { padding: 20px 24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="email-wrapper">
+  <div class="email-container">
+
+    <!-- Header -->
+    <div class="email-header">
+      <div class="email-logo">EXPERT<span>.</span>SERVICES</div>
+      <div class="email-tagline">Experts Store · Karachi, Pakistan</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="email-hero">
+      <div class="email-hero-icon">🎉</div>
+      <h1>Order Confirmed!</h1>
+      <p>Your order has been received and is being processed.</p>
+    </div>
+
+    <!-- Body -->
+    <div class="email-body">
+
+      <!-- Greeting -->
+      <!-- TEMPLATE VARIABLE: Replace {{customer_name}} with actual name -->
+      <p class="greeting">Hi <strong>{{customer_name}}</strong>, thank you for shopping with Experts Store! We've received your order and will be in touch shortly to confirm your delivery details.</p>
+
+      <!-- Order ID -->
+      <div class="order-id-box">
+        <div>
+          <div class="order-id-label">Order Reference</div>
+          <!-- TEMPLATE VARIABLE: Replace {{order_id}} -->
+          <div class="order-id-value">{{order_id}}</div>
+        </div>
+        <!-- TEMPLATE VARIABLE: Replace {{order_date}} -->
+        <div style="font-size:12px; color:#6b7280; text-align:right;">{{order_date}}</div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="order-items">
+        <div class="section-title">Items Ordered</div>
+        <!-- TEMPLATE VARIABLE: Repeat this block for each item -->
+        <!-- {{#each order_items}} -->
+        <div class="order-item">
+          <div class="item-details">
+            <!-- {{item_name}} -->
+            <div class="item-name">RFID Blocking Card Sleeve</div>
+            <!-- {{#if item_color}}<div class="item-meta">Color: {{item_color}} · Qty: {{item_qty}}</div>{{/if}} -->
+            <div class="item-meta">Qty: 1</div>
+          </div>
+          <!-- <div class="item-price">PKR {{item_total}}</div> -->
+          <div class="item-price">PKR 999</div>
+        </div>
+        <!-- {{/each}} -->
+      </div>
+
+      <!-- Totals -->
+      <div class="order-totals">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <!-- <span>PKR {{subtotal}}</span> -->
+          <span>PKR 999</span>
+        </div>
+        <div class="total-row">
+          <span>Shipping</span>
+          <!-- <span>{{shipping_text}}</span> -->
+          <span>PKR 350</span>
+        </div>
+        <div class="total-row">
+          <span>Total</span>
+          <!-- <span>PKR {{total_amount}}</span> -->
+          <span>PKR 1,349</span>
+        </div>
+      </div>
+
+      <!-- Delivery Details -->
+      <div class="delivery-info">
+        <div class="section-title">Delivery Details</div>
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <!-- <span class="info-value">{{customer_name}}</span> -->
+          <span class="info-value">{{customer_name}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <!-- <span class="info-value">{{phone}}</span> -->
+          <span class="info-value">{{phone}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <!-- <span class="info-value">{{address}}, {{city}}</span> -->
+          <span class="info-value">{{address}}, {{city}}</span>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="payment-badge">
+        💵 &nbsp;Cash on Delivery
+        <!-- TEMPLATE VARIABLE: Replace emoji + text for other payment methods -->
+      </div>
+
+      <!-- COD Notice -->
+      <div class="cod-notice">
+        <p>
+          <strong>Cash on Delivery:</strong> Please keep the exact amount ready at the time of delivery. Our courier will collect payment when your order arrives.
+          <!-- If Easypaisa/JazzCash: 
+            <strong>Easypaisa/JazzCash:</strong> Please ensure you've sent the payment to 03332240559 and shared the screenshot via WhatsApp to confirm your order. 
+          -->
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <a href="https://wa.me/923332240559" class="cta-btn">Need Help? WhatsApp Us</a>
+
+      <!-- Trust Bar -->
+      <div class="trust-bar">
+        <table>
+          <tr>
+            <td class="trust-item">
+              <div class="icon">🛡️</div>
+              <div class="label">Secure Order</div>
+            </td>
+            <td class="trust-item">
+              <div class="icon">🚚</div>
+              <div class="label">Pakistan-wide Delivery</div>
+            </td>
+            <td class="trust-item">
+              <div class="icon">✅</div>
+              <div class="label">Genuine Products</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+    </div><!-- /email-body -->
+
+    <!-- Footer -->
+    <div class="email-footer">
+      <div class="footer-links">
+        <a href="https://experts.com.pk">Home</a>
+        <a href="https://experts.com.pk/store.html">Store</a>
+        <a href="https://wa.me/923332240559">WhatsApp</a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 Expert Services &amp; Experts International. All rights reserved.<br>
+        Karachi, Pakistan &nbsp;·&nbsp; <a href="https://experts.com.pk">experts.com.pk</a>
+      </div>
+    </div>
+
+  </div><!-- /email-container -->
+
+  <!-- Preheader spacer -->
+  <div style="max-width:600px; margin:16px auto; text-align:center; font-size:12px; color:#9a9a9a;">
+    Questions? <a href="https://wa.me/923332240559" style="color:#fabe1a;">Chat with us on WhatsApp</a>
+  </div>
+
+</div><!-- /email-wrapper -->
+</body>
+</html>

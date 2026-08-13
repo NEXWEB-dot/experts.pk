@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--[if mso]>
+  <noscript>
+    <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+  </noscript>
+  <![endif]-->
+  <title>Your Order Confirmation — Experts Store</title>
+  <style type="text/css">
+    /* ======================================
+       RESET
+    ====================================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
+    body { background-color: #f2f2f5; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
+    a { color: #fabe1a; }
+
+    /* ======================================
+       OUTER WRAPPER
+    ====================================== */
+    .email-bg    { background-color: #f2f2f5; padding: 40px 0; }
+    .email-wrap  { max-width: 600px; margin: 0 auto; }
+
+    /* ======================================
+       HEADER
+    ====================================== */
+    .hdr         { background-color: #111111; border-radius: 16px 16px 0 0; padding: 32px 40px; text-align: center; }
+    .hdr-logo    { font-family: 'Courier New', Courier, monospace; font-size: 22px; font-weight: 700; letter-spacing: 4px; color: #ffffff; }
+    .hdr-logo em { color: #fabe1a; font-style: normal; }
+    .hdr-sub     { font-size: 11px; color: #666666; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
+
+    /* ======================================
+       HERO BANNER
+    ====================================== */
+    .hero        { background: linear-gradient(135deg, #fabe1a 0%, #f5aa00 100%); padding: 36px 40px; text-align: center; }
+    .hero-icon   { font-size: 52px; margin-bottom: 14px; line-height: 1; }
+    .hero h1     { font-size: 26px; font-weight: 800; color: #111111; margin-bottom: 8px; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .hero p      { font-size: 14px; color: #333333; }
+
+    /* ======================================
+       BODY / CARD
+    ====================================== */
+    .card        { background: #ffffff; padding: 36px 40px; }
+    .greeting    { font-size: 15px; color: #333333; line-height: 1.7; margin-bottom: 28px; }
+    .greeting strong { color: #111111; }
+
+    /* ======================================
+       ORDER REF BOX
+    ====================================== */
+    .order-ref       { background: #f8f7ff; border: 1px solid #e5e5f0; border-radius: 12px; padding: 20px 24px; margin-bottom: 28px; }
+    .order-ref-inner { display: flex; justify-content: space-between; align-items: center; }
+    .ref-lbl         { font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .ref-id          { font-family: 'Courier New', Courier, monospace; font-size: 22px; font-weight: 700; color: #fabe1a; letter-spacing: 2px; }
+    .ref-date        { font-size: 12px; color: #888888; text-align: right; line-height: 1.6; }
+
+    /* ======================================
+       SECTION TITLE
+    ====================================== */
+    .sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #888888; padding-bottom: 10px; border-bottom: 2px solid #f0f0f5; margin-bottom: 16px; }
+
+    /* ======================================
+       ITEMS TABLE
+    ====================================== */
+    .items-wrap  { margin-bottom: 24px; }
+    .item-row    { padding: 14px 0; border-bottom: 1px solid #f0f0f5; }
+    .item-row:last-child { border-bottom: none; }
+    .item-name   { font-size: 14px; font-weight: 600; color: #111111; margin-bottom: 3px; }
+    .item-meta   { font-size: 12px; color: #888888; }
+    .item-price  { font-size: 14px; font-weight: 700; color: #111111; white-space: nowrap; }
+
+    /* ======================================
+       TOTALS BOX
+    ====================================== */
+    .totals-box      { background: #fafafa; border: 1px solid #eeeeee; border-radius: 12px; padding: 20px 24px; margin-bottom: 28px; }
+    .totals-row      { font-size: 13px; color: #666666; padding: 7px 0; border-bottom: 1px solid #f0f0f5; }
+    .totals-row:last-child { border-bottom: none; padding-top: 14px; margin-top: 4px; font-size: 16px; font-weight: 700; color: #111111; }
+    .totals-row .val-gold { color: #fabe1a; }
+
+    /* ======================================
+       DELIVERY CARD
+    ====================================== */
+    .delivery-box    { background: #fafafa; border: 1px solid #eeeeee; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
+    .d-row           { font-size: 13px; color: #333333; padding: 6px 0; border-bottom: 1px solid #f0f0f5; }
+    .d-row:last-child{ border-bottom: none; }
+    .d-lbl           { color: #888888; display: inline-block; min-width: 80px; }
+    .d-val           { color: #111111; font-weight: 500; }
+
+    /* ======================================
+       PAYMENT PILL
+    ====================================== */
+    .pay-pill     { display: inline-flex; align-items: center; gap: 8px; background: #111111; color: #fabe1a; padding: 10px 18px; border-radius: 99px; font-size: 13px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 28px; }
+
+    /* ======================================
+       COD NOTICE BOX
+    ====================================== */
+    .notice-box  { background: #fffbea; border-left: 4px solid #fabe1a; border-radius: 0 10px 10px 0; padding: 16px 20px; margin-bottom: 28px; font-size: 13px; color: #7a6000; line-height: 1.7; }
+    .notice-box strong { color: #5a4500; }
+
+    /* ======================================
+       CTA BUTTON
+    ====================================== */
+    .cta-wrap    { text-align: center; margin-bottom: 28px; }
+    .cta-btn     { display: inline-block; background: #25D366; color: #ffffff !important; text-decoration: none; padding: 15px 34px; border-radius: 99px; font-size: 14px; font-weight: 700; letter-spacing: 0.4px; }
+    .cta-sub     { text-align: center; font-size: 11px; color: #aaaaaa; margin-top: 8px; }
+
+    /* ======================================
+       TRUST BADGES
+    ====================================== */
+    .trust-row   { border-top: 1px solid #f0f0f5; padding-top: 24px; margin-bottom: 0; }
+    .trust-cell  { text-align: center; padding: 0 12px; }
+    .trust-icon  { font-size: 26px; margin-bottom: 6px; }
+    .trust-label { font-size: 11px; color: #888888; line-height: 1.4; }
+
+    /* ======================================
+       DIVIDER
+    ====================================== */
+    .divider { height: 1px; background: #f0f0f5; margin: 28px 0; }
+
+    /* ======================================
+       FOOTER
+    ====================================== */
+    .ftr         { background: #111111; border-radius: 0 0 16px 16px; padding: 24px 40px; text-align: center; }
+    .ftr-links   { margin-bottom: 14px; }
+    .ftr-links a { color: #888888; font-size: 12px; margin: 0 10px; text-decoration: none; }
+    .ftr-links a:hover { color: #fabe1a; }
+    .ftr-copy    { font-size: 11px; color: #555555; line-height: 1.7; }
+    .ftr-copy a  { color: #fabe1a; text-decoration: none; }
+
+    /* ======================================
+       PREHEADER (hidden preview text)
+    ====================================== */
+    .preheader { display: none; max-height: 0; overflow: hidden; mso-hide: all; }
+
+    /* ======================================
+       RESPONSIVE
+    ====================================== */
+    @media only screen and (max-width: 620px) {
+      .email-bg   { padding: 0; }
+      .hdr        { padding: 24px 20px; border-radius: 0; }
+      .hero       { padding: 28px 20px; }
+      .card       { padding: 24px 20px; }
+      .hdr-logo   { font-size: 18px; letter-spacing: 2px; }
+      .hero h1    { font-size: 22px; }
+      .ref-id     { font-size: 18px; }
+      .ftr        { padding: 20px; border-radius: 0; }
+      .order-ref-inner { flex-direction: column; gap: 10px; align-items: flex-start; }
+      .ref-date   { text-align: left; }
+      .trust-row  table { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hidden preheader text shown in inbox preview -->
+<div class="preheader">
+  <!--  BACKEND: Replace with → "Your order {{ORDER_ID}} is confirmed — PKR {{TOTAL_AMOUNT}} · Cash on Delivery · Experts Store"  -->
+  Your order is confirmed — thank you for shopping with Experts Store, Karachi.
+</div>
+
+<div class="email-bg">
+<div class="email-wrap">
+
+  <!-- ================================================
+       HEADER
+  ================================================ -->
+  <div class="hdr">
+    <div class="hdr-logo">EXPERT<em>.</em>SERVICES</div>
+    <div class="hdr-sub">Experts Store &nbsp;·&nbsp; Karachi, Pakistan</div>
+  </div>
+
+  <!-- ================================================
+       HERO
+  ================================================ -->
+  <div class="hero">
+    <div class="hero-icon">📦</div>
+    <!--  BACKEND: If this is a resend, change heading to "Order Confirmation (Resent)"  -->
+    <h1>Order Confirmed!</h1>
+    <p>Here are your order details for your records.</p>
+  </div>
+
+  <!-- ================================================
+       CARD BODY
+  ================================================ -->
+  <div class="card">
+
+    <!-- Greeting -->
+    <!--  BACKEND: Replace {{CUSTOMER_NAME}}  -->
+    <p class="greeting">Hi <strong>{{CUSTOMER_NAME}}</strong>, thank you for your order!<br>
+    We've received it and will confirm delivery details with you shortly via WhatsApp or phone.</p>
+
+    <!-- Order Reference Box -->
+    <div class="order-ref">
+      <div class="order-ref-inner">
+        <div>
+          <div class="ref-lbl">Order Reference</div>
+          <!--  BACKEND: Replace {{ORDER_ID}}  -->
+          <div class="ref-id">{{ORDER_ID}}</div>
+        </div>
+        <div class="ref-date">
+          <!--  BACKEND: Replace {{ORDER_DATE}} and {{ORDER_TIME}}  -->
+          {{ORDER_DATE}}<br>{{ORDER_TIME}} PKT
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Items ---- -->
+    <div class="sec-title">Items Ordered</div>
+    <div class="items-wrap">
+
+      <!--
+        BACKEND: Loop over order items. For each item output a block like:
+        ============================================================
+        <table width="100%" style="margin-bottom:0;">
+          <tr class="item-row">
+            <td style="padding:14px 0; border-bottom:1px solid #f0f0f5;">
+              <div class="item-name">{{ITEM_NAME}}</div>
+              <div class="item-meta">
+                {{#if ITEM_COLOR}}Color: {{ITEM_COLOR}} &nbsp;·&nbsp; {{/if}}
+                Qty: {{ITEM_QTY}}
+              </div>
+            </td>
+            <td style="padding:14px 0 14px 16px; border-bottom:1px solid #f0f0f5; text-align:right; white-space:nowrap;">
+              <div class="item-price">PKR {{ITEM_TOTAL}}</div>
+            </td>
+          </tr>
+        </table>
+        ============================================================
+        EXAMPLE (remove before production):
+      -->
+      <table width="100%">
+        <tr>
+          <td style="padding:14px 0; border-bottom:1px solid #f0f0f5;">
+            <div class="item-name">RFID Blocking Card Sleeve</div>
+            <div class="item-meta">Color: Black &nbsp;·&nbsp; Qty: 2</div>
+          </td>
+          <td style="padding:14px 0 14px 16px; border-bottom:1px solid #f0f0f5; text-align:right; white-space:nowrap;">
+            <div class="item-price">PKR 1,998</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:14px 0;">
+            <div class="item-name">RFID Blocking Passport Sleeve</div>
+            <div class="item-meta">Qty: 1</div>
+          </td>
+          <td style="padding:14px 0 14px 16px; text-align:right; white-space:nowrap;">
+            <div class="item-price">PKR 699</div>
+          </td>
+        </tr>
+      </table>
+      <!-- END EXAMPLE -->
+
+    </div><!-- /items-wrap -->
+
+    <!-- ---- Totals ---- -->
+    <div class="totals-box">
+      <table width="100%">
+        <tr>
+          <td class="totals-row">Subtotal</td>
+          <!--  BACKEND: Replace {{SUBTOTAL}}  -->
+          <td class="totals-row" align="right">PKR {{SUBTOTAL}}</td>
+        </tr>
+        <tr>
+          <td class="totals-row">Shipping</td>
+          <!--  BACKEND: Replace {{SHIPPING_TEXT}}  e.g. "PKR 350 (Karachi, 12pm–8pm)"  -->
+          <td class="totals-row" align="right">{{SHIPPING_TEXT}}</td>
+        </tr>
+        <tr>
+          <td class="totals-row">
+            <strong>Total</strong>
+          </td>
+          <!--  BACKEND: Replace {{TOTAL_AMOUNT}}  -->
+          <td class="totals-row" align="right">
+            <span class="val-gold"><strong>PKR {{TOTAL_AMOUNT}}</strong></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ---- Delivery Details ---- -->
+    <div class="sec-title">Delivery Details</div>
+    <div class="delivery-box">
+      <table width="100%">
+        <tr>
+          <td class="d-row">
+            <span class="d-lbl">Name</span>
+            <!--  BACKEND: Replace {{CUSTOMER_NAME}}  -->
+            <span class="d-val">{{CUSTOMER_NAME}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="d-row">
+            <span class="d-lbl">Phone</span>
+            <!--  BACKEND: Replace {{PHONE}}  -->
+            <span class="d-val">{{PHONE}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="d-row">
+            <span class="d-lbl">Address</span>
+            <!--  BACKEND: Replace {{ADDRESS}} and {{CITY}}  -->
+            <span class="d-val">{{ADDRESS}}, {{CITY}}</span>
+          </td>
+        </tr>
+        <!--  BACKEND: Show postal code row only if provided
+        <tr>
+          <td class="d-row">
+            <span class="d-lbl">Postal Code</span>
+            <span class="d-val">{{POSTAL_CODE}}</span>
+          </td>
+        </tr>
+        -->
+        <!--  BACKEND: Show notes row only if provided
+        <tr>
+          <td class="d-row" style="border-bottom:none;">
+            <span class="d-lbl">Notes</span>
+            <span class="d-val">{{ORDER_NOTES}}</span>
+          </td>
+        </tr>
+        -->
+      </table>
+    </div>
+
+    <!-- ---- Payment Method ---- -->
+    <div class="sec-title">Payment Method</div>
+    <!--
+      BACKEND: Show the correct pill based on payment type:
+
+      COD:
+      <div class="pay-pill">💵 &nbsp;Cash on Delivery</div>
+
+      Easypaisa:
+      <div class="pay-pill">💚 &nbsp;Easypaisa · 03332240559</div>
+
+      JazzCash:
+      <div class="pay-pill">🔴 &nbsp;JazzCash · 03332240559</div>
+
+      Bank Transfer:
+      <div class="pay-pill">🏦 &nbsp;Bank Transfer</div>
+    -->
+    <div class="pay-pill">💵 &nbsp;Cash on Delivery</div>
+
+    <!-- ---- COD / Payment Instruction ---- -->
+    <!--
+      BACKEND: Show matching notice based on payment type:
+
+      COD:
+    -->
+    <div class="notice-box">
+      <strong>Cash on Delivery:</strong> Please keep the exact amount of
+      <!--  BACKEND: Replace {{TOTAL_AMOUNT}}  -->
+      <strong>PKR {{TOTAL_AMOUNT}}</strong> ready when your order arrives.
+      Our courier will collect payment at your doorstep.
+    </div>
+    <!--
+      Easypaisa / JazzCash:
+      <div class="notice-box">
+        <strong>Easypaisa / JazzCash:</strong> Please transfer
+        <strong>PKR {{TOTAL_AMOUNT}}</strong> to <strong>03332240559</strong>
+        and share the payment screenshot with us on WhatsApp to confirm your order.
+      </div>
+
+      Bank Transfer:
+      <div class="notice-box">
+        <strong>Bank Transfer:</strong> Our bank account details will be shared with you
+        on WhatsApp. Please complete the transfer and send us the receipt to confirm your order.
+      </div>
+    -->
+
+    <!-- ---- CTA ---- -->
+    <div class="cta-wrap">
+      <a href="https://wa.me/923332240559" class="cta-btn">
+        💬 &nbsp;Need Help? WhatsApp Us
+      </a>
+      <div class="cta-sub">We typically reply within a few minutes.</div>
+    </div>
+
+    <!-- ---- Trust Badges ---- -->
+    <div class="trust-row">
+      <table width="100%">
+        <tr>
+          <td class="trust-cell">
+            <div class="trust-icon">🛡️</div>
+            <div class="trust-label">Secure<br>Order</div>
+          </td>
+          <td class="trust-cell">
+            <div class="trust-icon">🚚</div>
+            <div class="trust-label">Nationwide<br>Delivery</div>
+          </td>
+          <td class="trust-cell">
+            <div class="trust-icon">✅</div>
+            <div class="trust-label">Genuine<br>Products</div>
+          </td>
+          <td class="trust-cell">
+            <div class="trust-icon">💬</div>
+            <div class="trust-label">WhatsApp<br>Support</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </div><!-- /card -->
+
+  <!-- ================================================
+       FOOTER
+  ================================================ -->
+  <div class="ftr">
+    <div class="ftr-links">
+      <a href="https://experts.com.pk">Home</a>
+      <a href="https://experts.com.pk/store.html">Store</a>
+      <a href="https://wa.me/923332240559">WhatsApp</a>
+    </div>
+    <div class="ftr-copy">
+      &copy; 2026 Expert Services &amp; Experts International. All rights reserved.<br>
+      Karachi, Pakistan &nbsp;·&nbsp;
+      <a href="https://experts.com.pk">experts.com.pk</a>
+      &nbsp;·&nbsp;
+      <a href="tel:+923332240559">+92 333 2240559</a>
+    </div>
+  </div>
+
+  <!-- Bottom padding -->
+  <div style="height:32px;"></div>
+
+</div><!-- /email-wrap -->
+</div><!-- /email-bg -->
+
+</body>
+</html>

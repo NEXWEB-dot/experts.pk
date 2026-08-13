@@ -3,18 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout | Expert Services</title>
-<meta name="description" content="Complete your order from Experts Store — Cash on Delivery across Pakistan.">
+
+<title>Checkout | Experts Store — Expert Services</title>
+<meta name="description" content="Complete your order from Experts Store. Cash on Delivery, Easypaisa, JazzCash and Bank Transfer accepted. Fast delivery across Pakistan.">
 <meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://experts.com.pk/checkout.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://experts.com.pk/checkout.html">
+<meta property="og:title" content="Checkout | Experts Store">
+<meta property="og:description" content="Complete your order from Experts Store — Cash on Delivery across Pakistan.">
+<meta property="og:site_name" content="Expert Services">
 
 <!-- Theme & Favicons -->
 <meta name="theme-color" content="#000000">
 <meta name="msapplication-TileColor" content="#000000">
 <link rel="icon" type="image/png" href="images/favicon.png">
 
-<!-- Performance: preconnect to Google Fonts -->
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Michroma&family=Montserrat:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Montserrat:wght@400;500;700&display=swap"></noscript>
+
+<!-- Structured Data: Breadcrumb -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home",  "item": "https://experts.com.pk/" },
+    { "@type": "ListItem", "position": 2, "name": "Store", "item": "https://experts.com.pk/store.html" },
+    { "@type": "ListItem", "position": 3, "name": "Checkout" }
+  ]
+}
+</script>
 
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -35,12 +59,12 @@
       <li class="nav-dropdown">
         <a href="index.html#services" class="dropdown-toggle">Services <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
         <ul class="dropdown-menu">
-          <li><a href="index.html#services">Sale & Marketing</a></li>
-          <li><a href="index.html#services">Printing & Packaging</a></li>
-          <li><a href="index.html#services">Import & Export</a></li>
+          <li><a href="index.html#services">Sale &amp; Marketing</a></li>
+          <li><a href="index.html#services">Printing &amp; Packaging</a></li>
+          <li><a href="index.html#services">Import &amp; Export</a></li>
           <li><a href="index.html#services">Graphic Designing</a></li>
           <li><a href="index.html#services">Product Photography</a></li>
-          <li><a href="index.html#services">Web Development & Seo</a></li>
+          <li><a href="index.html#services">Web Development &amp; SEO</a></li>
         </ul>
       </li>
       <li><a href="store.html">Store</a></li>
@@ -66,12 +90,17 @@
   <!-- ===================== Checkout Hero ===================== -->
   <section class="checkout-page-hero">
     <div class="container">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <a href="store.html">Store</a>
+        <span aria-hidden="true">›</span>
+        <span>Checkout</span>
+      </nav>
       <div class="section-label">
-        <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
-        CHECKOUT
+        <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="" width="14" height="14">
+        SECURE CHECKOUT
       </div>
       <h1>Complete Your Order.</h1>
-      <p class="checkout-page-hero-sub">Review your items and fill in your delivery details below.</p>
+      <p class="checkout-page-hero-sub">Review your items, fill in delivery details, and choose a payment method.</p>
     </div>
   </section>
 
@@ -95,7 +124,7 @@
       <!-- Checkout layout (shown when cart has items) -->
       <div class="checkout-layout" id="checkoutLayout" style="display:none;">
 
-        <!-- Progress Bar -->
+        <!-- Progress Bar — full width -->
         <div class="checkout-progress" style="grid-column: 1 / -1;">
           <div class="checkout-progress-bar" id="progressBar"></div>
           <div class="progress-step active" data-step="1">
@@ -112,72 +141,106 @@
           </div>
         </div>
 
-        <!-- LEFT: Form/Steps Container -->
+        <!-- LEFT: Form / Steps -->
         <div class="checkout-form-col">
           <div class="checkout-section-card">
-            
-            <!-- STEP 1: Cart Review -->
+
+            <!-- ========== STEP 1: Cart Review ========== -->
             <div class="checkout-step-content active" id="step1">
-              <h2 class="checkout-card-title">Review Your Cart</h2>
+              <h2 class="checkout-card-title">
+                <span class="checkout-step-num">01</span>
+                Review Your Cart
+              </h2>
               <div id="checkoutCartItems">
                 <!-- Injected by checkout.js -->
               </div>
               <div class="checkout-actions">
-                <a href="store.html" class="btn btn-outline">Continue Shopping</a>
-                <button class="btn btn-gold" id="btnNextToStep2">Next: Delivery Details</button>
+                <a href="store.html" class="btn btn-outline">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle;"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Continue Shopping
+                </a>
+                <button class="btn btn-gold" id="btnNextToStep2">
+                  Delivery Details
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:6px;vertical-align:middle;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
               </div>
             </div>
 
-            <!-- STEP 2: Delivery Details -->
+            <!-- ========== STEP 2: Delivery Details ========== -->
             <div class="checkout-step-content" id="step2">
-              <h2 class="checkout-card-title">Delivery Details</h2>
-              <form id="checkoutFormStep2" autocomplete="on">
+              <h2 class="checkout-card-title">
+                <span class="checkout-step-num">02</span>
+                Delivery Details
+              </h2>
+              <form id="checkoutFormStep2" autocomplete="on" novalidate>
                 <div class="checkout-form-grid">
                   <div class="form-field full">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" name="name" autocomplete="name" required>
+                    <label for="fullName">Full Name <span class="field-required">*</span></label>
+                    <input type="text" id="fullName" name="name" autocomplete="name" placeholder="Muhammad Ali" required>
                   </div>
                   <div class="form-field">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" placeholder="03XX-XXXXXXX" autocomplete="tel" required>
+                    <label for="phone">Phone Number <span class="field-required">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="0333-2240559" autocomplete="tel" required>
                   </div>
                   <div class="form-field">
-                    <label for="email">Email (optional)</label>
-                    <input type="email" id="email" name="email" autocomplete="email">
+                    <label for="email">
+                      Email
+                      <span class="field-optional">— for COD email confirmation</span>
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
                   </div>
                   <div class="form-field full">
-                    <label for="address">Delivery Address</label>
-                    <input type="text" id="address" name="address" autocomplete="street-address" required>
+                    <label for="address">Delivery Address <span class="field-required">*</span></label>
+                    <input type="text" id="address" name="address" placeholder="House/Flat, Street, Area" autocomplete="street-address" required>
                   </div>
                   <div class="form-field">
-                    <label for="city">City</label>
-                    <input type="text" id="city" name="city" autocomplete="address-level2" required>
+                    <label for="city">City <span class="field-required">*</span></label>
+                    <input type="text" id="city" name="city" placeholder="Karachi" autocomplete="address-level2" required>
                   </div>
                   <div class="form-field" id="deliveryTimeField" style="display:none;">
-                    <label for="deliveryTime">Preferred Delivery Time (Karachi)</label>
-                    <select id="deliveryTime" name="deliveryTime" style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; background: transparent; color: inherit;">
-                      <option value="high">8am - 12pm (High Rate - PKR 500)</option>
-                      <option value="medium" selected>12pm - 8pm (Medium Rate - PKR 350)</option>
-                      <option value="low">8pm - 12am (Low Rate - PKR 200)</option>
+                    <label for="deliveryTime">Preferred Delivery Slot <span class="field-note">(Karachi only)</span></label>
+                    <select id="deliveryTime" name="deliveryTime" class="form-select">
+                      <option value="high">8am – 12pm  (PKR 500)</option>
+                      <option value="medium" selected>12pm – 8pm  (PKR 350)</option>
+                      <option value="low">8pm – 12am  (PKR 200)</option>
                     </select>
                   </div>
                   <div class="form-field">
-                    <label for="postalCode">Postal Code (optional)</label>
-                    <input type="text" id="postalCode" name="postalCode" autocomplete="postal-code">
+                    <label for="postalCode">Postal Code <span class="field-optional">optional</span></label>
+                    <input type="text" id="postalCode" name="postalCode" placeholder="75500" autocomplete="postal-code">
                   </div>
                 </div>
+
+                <!-- Delivery info note -->
+                <div class="checkout-delivery-note">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Karachi: same-day delivery available. All other cities: 2–5 business days.
+                </div>
+
                 <div class="checkout-actions">
-                  <button type="button" class="btn btn-outline" id="btnBackToStep1">Back to Cart</button>
-                  <button type="submit" class="btn btn-gold" id="btnNextToStep3">Next: Payment</button>
+                  <button type="button" class="btn btn-outline" id="btnBackToStep1">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle;"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                    Back to Cart
+                  </button>
+                  <button type="submit" class="btn btn-gold" id="btnNextToStep3">
+                    Payment Method
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:6px;vertical-align:middle;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
                 </div>
               </form>
             </div>
 
-            <!-- STEP 3: Payment Method -->
+            <!-- ========== STEP 3: Payment Method ========== -->
             <div class="checkout-step-content" id="step3">
-              <h2 class="checkout-card-title">Payment Method</h2>
+              <h2 class="checkout-card-title">
+                <span class="checkout-step-num">03</span>
+                Payment Method
+              </h2>
               <form id="checkoutFormStep3">
+
                 <div class="payment-methods-list">
+
+                  <!-- COD -->
                   <label class="payment-method-option selected" id="paymentCOD">
                     <input type="radio" name="payment" value="cod" checked>
                     <span class="payment-radio-circle"></span>
@@ -187,25 +250,68 @@
                     </div>
                     <span class="payment-method-icon">💵</span>
                   </label>
+
+                  <!-- Easypaisa -->
+                  <label class="payment-method-option" id="paymentEasypaisa">
+                    <input type="radio" name="payment" value="easypaisa">
+                    <span class="payment-radio-circle"></span>
+                    <div class="payment-method-text">
+                      <h4>Easypaisa</h4>
+                      <p>Transfer to 03332240559 · confirm via WhatsApp</p>
+                    </div>
+                    <span class="payment-method-icon">💚</span>
+                  </label>
+
+                  <!-- JazzCash -->
+                  <label class="payment-method-option" id="paymentJazzCash">
+                    <input type="radio" name="payment" value="jazzcash">
+                    <span class="payment-radio-circle"></span>
+                    <div class="payment-method-text">
+                      <h4>JazzCash</h4>
+                      <p>Transfer to 03332240559 · confirm via WhatsApp</p>
+                    </div>
+                    <span class="payment-method-icon">🔴</span>
+                  </label>
+
+                  <!-- Bank Transfer -->
+                  <label class="payment-method-option" id="paymentBank">
+                    <input type="radio" name="payment" value="bank">
+                    <span class="payment-radio-circle"></span>
+                    <div class="payment-method-text">
+                      <h4>Bank Transfer</h4>
+                      <p>Account details will be shared with you on WhatsApp</p>
+                    </div>
+                    <span class="payment-method-icon">🏦</span>
+                  </label>
+
                 </div>
 
-                <div class="form-field full" style="margin-top:24px;">
-                  <label for="orderNotes">Order Notes (optional)</label>
+                <!-- Payment info sub-panel (shown for Easypaisa / JazzCash / Bank) -->
+                <div class="payment-info-panel" id="paymentInfoPanel" style="display:none;">
+                  <div class="payment-info-content" id="paymentInfoContent"></div>
+                </div>
+
+                <!-- Order Notes -->
+                <div class="form-field full" style="margin-top:28px;">
+                  <label for="orderNotes">Order Notes <span class="field-optional">optional</span></label>
                   <textarea id="orderNotes" name="notes" rows="3" placeholder="Any special instructions for delivery…"></textarea>
                 </div>
 
                 <div class="checkout-actions">
-                  <button type="button" class="btn btn-outline" id="btnBackToStep2">Back to Delivery</button>
-                  <button type="submit" class="btn-submit checkout-submit-btn" id="placeOrderBtn" style="width:auto; margin-top:0;">
-                    <span class="submit-text">Place Order</span>
+                  <button type="button" class="btn btn-outline" id="btnBackToStep2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle;"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                    Back
+                  </button>
+                  <button type="submit" class="btn-submit checkout-submit-btn" id="placeOrderBtn">
+                    <span class="submit-text">Place Order — Cash on Delivery</span>
                     <span class="submit-spinner" style="display:none;"></span>
                   </button>
                 </div>
               </form>
             </div>
 
-          </div>
-        </div>
+          </div><!-- /checkout-section-card -->
+        </div><!-- /checkout-form-col -->
 
         <!-- RIGHT: Order Summary -->
         <div class="checkout-summary-col">
@@ -219,24 +325,28 @@
             </div>
             <div class="checkout-trust-badges">
               <div class="trust-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 <span>Secure Order</span>
               </div>
               <div class="trust-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 0 1-2 2h-1M6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 0 1-2 2h-1M6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
                 <span>Pakistan-wide Delivery</span>
               </div>
               <div class="trust-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 <span>Genuine Products</span>
+              </div>
+              <div class="trust-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fabe1a" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>COD · Easypaisa · JazzCash</span>
               </div>
             </div>
           </div>
         </div>
 
-      </div>
+      </div><!-- /checkout-layout -->
 
-      <!-- Success / Confirmation -->
+      <!-- ===================== Success / Confirmation ===================== -->
       <div class="checkout-success" id="checkoutSuccess" style="display:none;">
         <div class="success-card">
           <div class="success-check-ring">
@@ -246,16 +356,31 @@
               <polyline points="18,28 25,35 38,22" stroke="#fabe1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="success-check-anim"/>
             </svg>
           </div>
-          <h2>Order Placed Successfully!</h2>
+          <h2>Order Placed!</h2>
           <p>Thank you for shopping with Experts Store.</p>
-          <p>Your order will be delivered via <strong>Cash on Delivery</strong>.</p>
           <div class="success-order-id" id="orderIdDisplay"></div>
           <div class="success-details" id="successDetails"></div>
-          <a href="store.html" class="btn btn-gold">Continue Shopping</a>
+
+          <!-- Email Resend Section (COD only — shown/hidden by JS) -->
+          <div class="email-resend-section" id="emailResendSection" style="display:none;">
+            <div class="email-resend-divider"></div>
+            <h4 class="email-resend-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email Confirmation
+            </h4>
+            <p class="email-resend-desc">Receive your order details by email.</p>
+            <div class="email-resend-form">
+              <input type="email" id="resendEmailInput" class="email-resend-input" placeholder="your@email.com" autocomplete="email">
+              <button type="button" id="resendEmailBtn" class="btn btn-gold email-resend-btn">Send</button>
+            </div>
+            <p class="email-resend-status" id="emailResendStatus"></p>
+          </div>
+
+          <a href="store.html" class="btn btn-outline" style="margin-top:28px; display:inline-block;">Continue Shopping</a>
         </div>
       </div>
 
-    </div>
+    </div><!-- /container -->
   </section>
 
 </main>
@@ -281,6 +406,7 @@
       <ul>
         <li><a href="store.html">All Products</a></li>
         <li><a href="store.html">Cash on Delivery</a></li>
+        <li><a href="store.html">Easypaisa / JazzCash</a></li>
       </ul>
     </div>
   </div>
@@ -289,7 +415,6 @@
     <span>Karachi, Pakistan</span>
   </div>
 </footer>
-
 
 <!-- ===================== Cart Drawer ===================== -->
 <div class="cart-overlay" id="cartOverlay"></div>
@@ -306,12 +431,13 @@
       <span>Subtotal</span>
       <span id="cartSubtotal">PKR 0</span>
     </div>
+    <!-- checkout.js replaces this button's behaviour to close drawer -->
     <button class="btn-submit" id="checkoutBtn">Proceed to Checkout</button>
   </div>
 </aside>
+
 <script src="js/sanity.js"></script>
 <script src="js/main.js"></script>
 <script src="js/checkout.js"></script>
 </body>
 </html>
-

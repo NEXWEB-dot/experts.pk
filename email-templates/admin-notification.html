@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Order Alert — Experts Store Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d0d0d; font-family: 'Segoe UI', Arial, Helvetica, sans-serif; color: #e0e0e0; -webkit-text-size-adjust: 100%; }
+    table { border-collapse: collapse; width: 100%; }
+    img { border: 0; display: block; max-width: 100%; }
+    a { color: #fabe1a; text-decoration: none; }
+
+    .email-wrapper { background: #0d0d0d; padding: 40px 0; }
+    .email-container { max-width: 620px; margin: 0 auto; background: #1a1a1a; border-radius: 16px; overflow: hidden; border: 1px solid #2a2a2a; }
+
+    /* Header */
+    .email-header { background: #fabe1a; padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; }
+    .email-logo { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 700; letter-spacing: 3px; color: #111111; }
+    .alert-badge { background: #111111; color: #fabe1a; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* Alert Banner */
+    .alert-banner { background: #111; padding: 28px 40px; border-bottom: 1px solid #2a2a2a; }
+    .alert-banner h1 { font-size: 22px; color: #ffffff; font-weight: 700; margin-bottom: 6px; }
+    .alert-banner p { font-size: 14px; color: #8a8a8a; }
+
+    /* Body */
+    .email-body { padding: 32px 40px; }
+
+    /* Order ID Strip */
+    .order-id-strip { background: #222; border: 1px solid #333; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+    .order-id-strip .label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .order-id-strip .value { font-size: 20px; font-weight: 700; color: #fabe1a; font-family: 'Courier New', monospace; }
+    .order-id-strip .timestamp { font-size: 12px; color: #6b7280; text-align: right; }
+
+    /* Section Title */
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #6b7280; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+
+    /* Customer Info */
+    .info-grid { background: #222; border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+    .info-row { display: flex; gap: 12px; margin-bottom: 10px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label { font-size: 12px; color: #6b7280; min-width: 80px; }
+    .info-value { font-size: 13px; color: #e0e0e0; font-weight: 500; }
+    .info-value a { color: #fabe1a; }
+
+    /* Order Items Table */
+    .items-table { margin-bottom: 24px; width: 100%; border-radius: 10px; overflow: hidden; border: 1px solid #2a2a2a; }
+    .items-table-header { background: #222; }
+    .items-table-header th { padding: 12px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
+    .items-table-header th:last-child { text-align: right; }
+    .items-table-row { border-top: 1px solid #2a2a2a; }
+    .items-table-row td { padding: 14px 16px; font-size: 13px; color: #e0e0e0; vertical-align: middle; }
+    .items-table-row td:last-child { text-align: right; color: #fabe1a; font-weight: 600; }
+    .item-name-cell .name { font-weight: 600; }
+    .item-name-cell .meta { font-size: 11px; color: #6b7280; margin-top: 3px; }
+
+    /* Totals */
+    .totals-box { background: #222; border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+    .total-row { display: flex; justify-content: space-between; font-size: 13px; color: #8a8a8a; margin-bottom: 10px; }
+    .total-row:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px solid #2a2a2a; font-size: 16px; font-weight: 700; color: #ffffff; }
+    .total-row:last-child span:last-child { color: #fabe1a; }
+
+    /* Payment badge */
+    .payment-status { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 24px; }
+    .payment-cod { background: rgba(74, 222, 128, 0.12); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.25); }
+    .payment-easypaisa { background: rgba(34, 197, 94, 0.12); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.25); }
+    .payment-jazzcash { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
+    .payment-bank { background: rgba(59, 130, 246, 0.12); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25); }
+
+    /* Action Buttons */
+    .action-btns { display: flex; gap: 12px; margin-bottom: 28px; }
+    .btn-whatsapp { display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff; padding: 14px 24px; border-radius: 99px; font-size: 14px; font-weight: 700; text-decoration: none; flex: 1; justify-content: center; }
+    .btn-call { display: inline-flex; align-items: center; gap: 8px; background: #333; color: #ffffff; padding: 14px 24px; border-radius: 99px; font-size: 14px; font-weight: 700; text-decoration: none; flex: 1; justify-content: center; }
+
+    /* Notes */
+    .order-notes { background: #111; border: 1px solid #2a2a2a; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; }
+    .order-notes .label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .order-notes p { font-size: 13px; color: #e0e0e0; line-height: 1.6; }
+
+    /* Footer */
+    .email-footer { background: #111; padding: 20px 40px; text-align: center; border-top: 1px solid #2a2a2a; }
+    .email-footer p { font-size: 11px; color: #555; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .email-body { padding: 20px; }
+      .email-header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .alert-banner { padding: 20px; }
+      .action-btns { flex-direction: column; }
+      .email-footer { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="email-wrapper">
+  <div class="email-container">
+
+    <!-- Header -->
+    <div class="email-header">
+      <div class="email-logo">EXPERT.SERVICES</div>
+      <div class="alert-badge">🔔 New Order</div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div class="alert-banner">
+      <!-- TEMPLATE VARIABLE: Replace {{order_id}} and {{order_date}} -->
+      <h1>New Order Received!</h1>
+      <p>A new order <strong style="color:#fabe1a;">{{order_id}}</strong> was placed on {{order_date}} at {{order_time}} PKT</p>
+    </div>
+
+    <!-- Body -->
+    <div class="email-body">
+
+      <!-- Order ID Strip -->
+      <div class="order-id-strip">
+        <div>
+          <div class="label">Order ID</div>
+          <!-- TEMPLATE VARIABLE: Replace {{order_id}} -->
+          <div class="value">{{order_id}}</div>
+        </div>
+        <div class="timestamp">
+          <!-- {{order_date}}<br>{{order_time}} PKT -->
+          {{order_date}}<br>{{order_time}} PKT
+        </div>
+      </div>
+
+      <!-- Customer Info -->
+      <div style="margin-bottom:8px;" class="section-title">Customer Information</div>
+      <div class="info-grid">
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <!-- <span class="info-value">{{customer_name}}</span> -->
+          <span class="info-value">{{customer_name}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <!-- <span class="info-value"><a href="tel:{{phone}}">{{phone}}</a></span> -->
+          <span class="info-value"><a href="tel:{{phone}}">{{phone}}</a></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <!-- <span class="info-value"><a href="mailto:{{email}}">{{email}}</a></span> -->
+          <span class="info-value"><a href="mailto:{{email}}">{{email}}</a></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <!-- <span class="info-value">{{address}}, {{city}}{{#if postal_code}}, {{postal_code}}{{/if}}</span> -->
+          <span class="info-value">{{address}}, {{city}}</span>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="section-title">Order Items</div>
+      <table class="items-table">
+        <thead class="items-table-header">
+          <tr>
+            <th>Product</th>
+            <th style="text-align:center;">Qty</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- TEMPLATE VARIABLE: Repeat this row for each item -->
+          <!-- {{#each order_items}} -->
+          <tr class="items-table-row">
+            <td class="item-name-cell">
+              <!-- <div class="name">{{item_name}}</div> -->
+              <div class="name">RFID Blocking Card Sleeve</div>
+              <!-- {{#if item_color}}<div class="meta">Color: {{item_color}}</div>{{/if}} -->
+              <div class="meta">Color: Black</div>
+            </td>
+            <!-- <td style="text-align:center;">{{item_qty}}</td> -->
+            <td style="text-align:center;">1</td>
+            <!-- <td>PKR {{item_total}}</td> -->
+            <td>PKR 999</td>
+          </tr>
+          <!-- {{/each}} -->
+        </tbody>
+      </table>
+
+      <!-- Totals -->
+      <div class="section-title">Order Totals</div>
+      <div class="totals-box">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <!-- <span>PKR {{subtotal}}</span> -->
+          <span>PKR 999</span>
+        </div>
+        <div class="total-row">
+          <span>Shipping</span>
+          <!-- <span>{{shipping_text}}</span> -->
+          <span>PKR 350 (Karachi, 12pm–8pm)</span>
+        </div>
+        <div class="total-row">
+          <span>Total to Collect</span>
+          <!-- <span>PKR {{total_amount}}</span> -->
+          <span>PKR 1,349</span>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="section-title">Payment Method</div>
+      <!-- TEMPLATE VARIABLE: Use appropriate class: payment-cod / payment-easypaisa / payment-jazzcash / payment-bank -->
+      <!-- For COD: -->
+      <div class="payment-status payment-cod">💵 &nbsp;Cash on Delivery</div>
+      <!-- For Easypaisa: <div class="payment-status payment-easypaisa">💚 Easypaisa — Verify screenshot</div> -->
+      <!-- For JazzCash: <div class="payment-status payment-jazzcash">🔴 JazzCash — Verify screenshot</div> -->
+      <!-- For Bank Transfer: <div class="payment-status payment-bank">🏦 Bank Transfer — Confirm receipt</div> -->
+
+      <!-- Order Notes (show only if present) -->
+      <!-- {{#if order_notes}} -->
+      <div class="section-title">Customer Notes</div>
+      <div class="order-notes">
+        <p>{{order_notes}}</p>
+      </div>
+      <!-- {{/if}} -->
+
+      <!-- Action Buttons -->
+      <div class="section-title">Quick Actions</div>
+      <div class="action-btns">
+        <!-- TEMPLATE VARIABLE: Replace {{phone}} with actual phone number -->
+        <a href="https://wa.me/92{{phone_digits}}" class="btn-whatsapp">
+          💬 &nbsp;WhatsApp Customer
+        </a>
+        <a href="tel:{{phone}}" class="btn-call">
+          📞 &nbsp;Call Customer
+        </a>
+      </div>
+
+    </div><!-- /email-body -->
+
+    <!-- Footer -->
+    <div class="email-footer">
+      <p>This is an automated order notification from Experts Store &middot; experts.com.pk</p>
+      <p style="margin-top:6px;">Do not reply to this email. Contact customer via WhatsApp or phone above.</p>
+    </div>
+
+  </div><!-- /email-container -->
+</div>
+</body>
+</html>

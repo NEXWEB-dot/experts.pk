@@ -1829,4 +1829,193 @@ body {
   .checkout-section-card { padding: 28px 20px; }
   .checkout-form-grid { grid-template-columns: 1fr; }
   .success-card { padding: 40px 24px; }
+  .checkout-actions { flex-direction: column-reverse; gap: 10px; }
+  .checkout-actions .btn, .checkout-actions .btn-submit, .checkout-actions .checkout-submit-btn { width: 100%; justify-content: center; }
 }
+
+/* ==========================================================================
+   Checkout v2 — New Components
+   ========================================================================== */
+
+/* ---- Breadcrumb nav ---- */
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+}
+.breadcrumb-nav a { color: var(--color-text-muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb-nav a:hover { color: var(--color-secondary); }
+.breadcrumb-nav span[aria-hidden] { opacity: 0.4; }
+
+/* ---- Field label utilities ---- */
+.field-required { color: var(--color-accent-brand); font-size: 0.85em; }
+.field-optional  { color: var(--color-text-muted); font-size: 0.75em; font-style: italic; font-weight: 400; }
+.field-note      { color: var(--color-text-muted); font-size: 0.75em; font-weight: 400; }
+
+/* ---- Form select ---- */
+.form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--color-text-on-dark);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(250,190,26,0.12);
+}
+
+/* ---- Delivery note ---- */
+.checkout-delivery-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  background: rgba(250,190,26,0.05);
+  border: 1px solid rgba(250,190,26,0.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 20px;
+  line-height: 1.5;
+}
+.checkout-delivery-note svg { flex-shrink: 0; margin-top: 1px; stroke: var(--color-secondary); }
+
+/* ---- Fix checkout-actions border for light mode ---- */
+.checkout-actions {
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---- Payment info panel ---- */
+.payment-info-panel {
+  margin-top: 16px;
+  animation: slideInUp 0.3s ease forwards;
+}
+.payment-info-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(250,190,26,0.06);
+  border: 1px solid rgba(250,190,26,0.2);
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+}
+.payment-info-icon { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
+.payment-info-title {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: 0.9rem;
+  color: var(--color-text-on-dark);
+  margin-bottom: 4px;
+}
+.payment-info-number {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--color-secondary);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.payment-info-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* ---- WhatsApp CTA on success ---- */
+.whatsapp-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #25D366 !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.whatsapp-cta:hover {
+  background: #1ebe5a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37,211,102,0.3);
+}
+
+/* ---- Email Resend Section ---- */
+.email-resend-section { text-align: left; }
+.email-resend-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 28px 0 22px;
+}
+.email-resend-title {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: 0.92rem;
+  color: var(--color-text-on-dark);
+  margin-bottom: 6px;
+}
+.email-resend-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: 14px !important;
+}
+.email-resend-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.email-resend-input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--color-text-on-dark);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.email-resend-input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(250,190,26,0.12);
+}
+.email-resend-btn {
+  white-space: nowrap;
+  padding: 11px 20px;
+  font-size: 0.875rem;
+}
+.email-resend-status {
+  font-size: 0.78rem;
+  margin-top: 8px !important;
+  min-height: 1.2em;
+}
+.email-resend-status.success { color: #4ade80; }
+.email-resend-status.error   { color: #f87171; }
+
+/* ---- Responsive additions ---- */
+@media (max-width: 480px) {
+  .email-resend-form { flex-direction: column; align-items: stretch; }
+  .email-resend-btn { width: 100%; }
+  .checkout-delivery-note { font-size: 0.75rem; }
+  .payment-info-inner { flex-direction: column; gap: 10px; }
+  .breadcrumb-nav { font-size: 0.72rem; }
+}
+
