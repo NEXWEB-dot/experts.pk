@@ -334,10 +334,22 @@ export async function onRequestPost(context) {
     const adminResult = results.find(r => r.type === 'admin');
     const customerResult = results.find(r => r.type === 'customer');
 
-    const hasFailure = results.some(r => !r.success);
+    const failures = results.filter(r => !r.success);
+    const hasFailure = failures.length > 0;
+
+    let errorMsg = null;
+    if (hasFailure) {
+      errorMsg = failures.map(f => {
+        const errObj = f.error;
+        if (typeof errObj === 'string') return errObj;
+        if (errObj && errObj.message) return errObj.message;
+        return JSON.stringify(errObj || f);
+      }).join(' | ');
+    }
 
     return new Response(JSON.stringify({
       success: !hasFailure,
+      error: errorMsg,
       from: fromEmail,
       admin: adminResult || null,
       customer: customerResult || null,

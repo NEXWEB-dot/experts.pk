@@ -460,7 +460,16 @@
       return res.json().then(function (data) {
         if (!res.ok || data.success === false) {
           console.error("Resend API response error:", data);
-          var errMsg = (data && data.error) ? (typeof data.error === 'string' ? data.error : JSON.stringify(data.error)) : ("Server returned status " + res.status);
+          var errMsg = data.error;
+          if (!errMsg && data.results && data.results.length) {
+            var failed = data.results.find(function(r) { return !r.success; });
+            if (failed && failed.error) {
+              errMsg = failed.error.message || JSON.stringify(failed.error);
+            }
+          }
+          if (!errMsg) {
+            errMsg = "Server returned status " + res.status;
+          }
           throw new Error(errMsg);
         }
         return data;
