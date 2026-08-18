@@ -53,6 +53,22 @@
       return;
     }
 
+    // Render detail skeleton
+    container.innerHTML = `
+      <div class="product-detail-grid" style="opacity:0.6;">
+        <div class="product-gallery">
+          <div class="main-image skeleton-shimmer" style="aspect-ratio:1/1;"></div>
+        </div>
+        <div class="product-info-block">
+          <div class="skeleton-line skeleton-shimmer" style="width:75%; height:36px; margin-bottom:16px; border-radius:6px;"></div>
+          <div class="skeleton-line skeleton-shimmer" style="width:40%; height:28px; margin-bottom:24px; border-radius:6px;"></div>
+          <div class="skeleton-line skeleton-shimmer" style="width:100%; height:16px; margin-bottom:8px; border-radius:4px;"></div>
+          <div class="skeleton-line skeleton-shimmer" style="width:90%; height:16px; margin-bottom:24px; border-radius:4px;"></div>
+          <div class="skeleton-line skeleton-shimmer" style="width:50%; height:48px; border-radius:99px;"></div>
+        </div>
+      </div>
+    `;
+
     try {
       const query = `*[_type == "product" && slug.current == "${slug}"][0]`;
       currentProduct = await window.sanityClient.fetch(query);
@@ -76,16 +92,16 @@
     let thumbnailsHtml = '';
     
     if (product.images && product.images.length > 0) {
-      mainImgSrc = window.sanityClient.urlFor(product.images[0], {width: 800, height: 800});
+      mainImgSrc = window.sanityClient.urlFor(product.images[0], { width: 900, height: 900, quality: 85, fit: 'crop' });
       
       if (product.images.length > 1) {
         thumbnailsHtml = '<div class="thumbnail-list">';
         product.images.forEach((img, idx) => {
-          const thumbSrc = window.sanityClient.urlFor(img, {width: 150, height: 150});
-          const fullSrc = window.sanityClient.urlFor(img, {width: 800, height: 800});
+          const thumbSrc = window.sanityClient.urlFor(img, { width: 160, height: 160, quality: 80, fit: 'crop' });
+          const fullSrc = window.sanityClient.urlFor(img, { width: 900, height: 900, quality: 85, fit: 'crop' });
           thumbnailsHtml += `
             <div class="thumbnail ${idx === 0 ? 'active' : ''}" data-full="${fullSrc}">
-              <img src="${thumbSrc}" alt="Thumbnail ${idx + 1}">
+              <img src="${thumbSrc}" alt="Thumbnail ${idx + 1}" width="160" height="160" loading="lazy" decoding="async">
             </div>
           `;
         });
@@ -118,10 +134,10 @@
     let btnText = product.comingSoon ? 'Coming Soon' : (!product.inStock ? 'Out of Stock' : 'Add to Cart');
 
     container.innerHTML = `
-      <div class="product-detail-grid reveal">
+      <div class="product-detail-grid reveal in-view">
         <div class="product-gallery">
           <div class="main-image">
-            <img src="${mainImgSrc}" id="mainProductImage" alt="${product.name}">
+            <img src="${mainImgSrc}" id="mainProductImage" alt="${product.name}" width="900" height="900" fetchpriority="high" decoding="async">
           </div>
           ${thumbnailsHtml}
         </div>
@@ -134,7 +150,7 @@
           </div>
           
           <div class="detail-description">
-            ${product.description}
+            ${product.description || ''}
           </div>
           
           ${colorsHtml}

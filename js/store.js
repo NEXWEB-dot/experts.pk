@@ -64,6 +64,27 @@
 
   
 
+  /* ---------- Skeleton Loader for Instant Perceived Performance ---------- */
+  function renderSkeletons() {
+    const grid = document.getElementById("productGrid");
+    if (!grid) return;
+    grid.innerHTML = Array(4).fill(0).map(function () {
+      return (
+        '<div class="product-card skeleton-card">' +
+          '<div class="product-media skeleton-shimmer" style="aspect-ratio:1/1;"></div>' +
+          '<div class="product-info" style="padding-top:16px;">' +
+            '<div class="skeleton-line skeleton-shimmer" style="width:70%; height:18px; margin-bottom:8px; border-radius:4px;"></div>' +
+            '<div class="skeleton-line skeleton-shimmer" style="width:90%; height:14px; margin-bottom:16px; border-radius:4px;"></div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+              '<div class="skeleton-line skeleton-shimmer" style="width:35%; height:20px; border-radius:4px;"></div>' +
+              '<div class="skeleton-line skeleton-shimmer" style="width:35%; height:32px; border-radius:99px;"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+  }
+
   /* ---------- Product & Category Fetching ---------- */
   async function loadStoreData() {
     if (!window.sanityClient) {
@@ -71,19 +92,24 @@
       return;
     }
 
-    try {
-      // Fetch categories
-      const catQuery = `*[_type == "category"] | order(order asc) { _id, title, "slug": slug.current }`;
-      const categories = await window.sanityClient.fetch(catQuery);
-      renderFilterBar(categories);
+    renderSkeletons();
 
-      // Fetch products
+    try {
+      // Parallel fetch via Sanity Edge CDN
+      const catQuery = `*[_type == "category"] | order(order asc) { _id, title, "slug": slug.current }`;
       const prodQuery = `*[_type == "product"] | order(order asc, _createdAt desc) {
         _id, name, "slug": slug.current, description, price, oldPrice, badge, comingSoon, inStock,
         "categorySlug": category->slug.current,
         colors, images
       }`;
-      allProducts = await window.sanityClient.fetch(prodQuery);
+
+      const [categories, products] = await Promise.all([
+        window.sanityClient.fetch(catQuery),
+        window.sanityClient.fetch(prodQuery)
+      ]);
+
+      renderFilterBar(categories);
+      allProducts = products || [];
       
       applyFiltersAndSort();
     } catch (err) {
@@ -135,8 +161,6 @@
       } else if (sortVal === 'price-high') {
         filtered.sort((a, b) => b.price - a.price);
       } else {
-        // newest (default, already sorted somewhat by the query, but we can't reliably resort without createdAt here unless we fetch it. 
-        // We'll just rely on the original array order which was fetched by order/createdAt
         const originalOrderMap = new Map(allProducts.map((p, i) => [p._id, i]));
         filtered.sort((a, b) => originalOrderMap.get(a._id) - originalOrderMap.get(b._id));
       }
@@ -156,11 +180,11 @@
     if (!grid) { return; }
 
     if (!products || products.length === 0) {
-      grid.innerHTML = '<div class="store-loading">No products found.</div>';
+      grid.innerHTML = '<div class="store-loading">No products found in this category.</div>';
       return;
     }
 
-    grid.innerHTML = products.map(function (p) {
+    grid.innerHTML = products.map(function (p, index) {
       var badgeHtml = p.badge
         ? '<span class="product-badge' + (p.comingSoon ? " badge-soon" : "") + '">' + p.badge + "</span>"
         : "";
@@ -172,21 +196,22 @@
         ? '<button class="add-to-cart-btn soon-btn" disabled>' + (p.comingSoon ? 'Coming Soon' : 'Out of Stock') + '</button>'
         : '<button class="add-to-cart-btn" data-id="' + p._id + '">Add to Cart</button>';
 
-      var imgSrc = (p.images && p.images.length > 0) ? window.sanityClient.urlFor(p.images[0], {width: 600, height: 600}) : PLACEHOLDER_PHOTO;
+      var imgSrc = (p.images && p.images.length > 0)
+        ? window.sanityClient.urlFor(p.images[0], { width: 480, height: 480, fit: 'crop', quality: 82 })
+        : PLACEHOLDER_PHOTO;
 
-      // Wrap image and title in an a tag to go to product details
       var productLink = `product.html?slug=${p.slug}`;
 
       return (
-        '<div class="product-card reveal' + (p.comingSoon ? " product-card--soon" : "") + '">' +
+        '<div class="product-card reveal' + (p.comingSoon ? " product-card--soon" : "") + '" data-delay="' + ((index % 4) * 80) + '">' +
           '<a href="' + productLink + '" class="product-media">' +
             badgeHtml +
-            '<img src="' + imgSrc + '" alt="' + p.name + '" loading="lazy">' +
+            '<img src="' + imgSrc + '" alt="' + p.name + '" width="480" height="480" loading="lazy" decoding="async">' +
             (p.comingSoon ? '<div class="soon-overlay"><span>Coming Soon</span></div>' : (!p.inStock ? '<div class="soon-overlay"><span>Out of Stock</span></div>' : '')) +
           "</a>" +
           '<div class="product-info">' +
             '<a href="' + productLink + '"><h3>' + p.name + '</h3></a>' +
-            '<p class="product-desc">' + p.description + "</p>" +
+            '<p class="product-desc">' + (p.description || '') + "</p>" +
             '<div class="product-price-row">' +
               '<span class="product-price">' + oldPriceHtml + formatPKR(p.price) + "</span>" +
               btnHtml +
@@ -212,7 +237,7 @@
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.12 });
+      }, { threshold: 0.1, rootMargin: "0px 0px -30px 0px" });
       grid.querySelectorAll(".reveal").forEach(function (el) { observer.observe(el); });
     } else {
       grid.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in-view"); });

@@ -30,12 +30,15 @@
 <meta name="msapplication-TileColor" content="#000000">
 <link rel="icon" type="image/png" href="images/favicon.png">
 
-<!-- Performance: preconnect to Google Fonts -->
+<!-- Performance: preconnect to CDN & Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://experts.com.pk">
+<link rel="preconnect" href="https://31o55q41.apicdn.sanity.io" crossorigin>
+<link rel="preconnect" href="https://cdn.sanity.io" crossorigin>
+<link rel="dns-prefetch" href="https://31o55q41.apicdn.sanity.io">
+<link rel="dns-prefetch" href="https://cdn.sanity.io">
 
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=5">
 
 <!-- Structured Data: Organization -->
 <script type="application/ld+json">
@@ -161,7 +164,7 @@
         </div>
       </div>
       <div class="hero-media reveal-right reveal">
-        <img src="images/hero-agency.jpg" alt="Expert Services agency team at work" width="700" height="420" loading="eager" decoding="async">
+        <img src="images/hero-agency.jpg" alt="Expert Services agency team at work" width="700" height="420" loading="eager" fetchpriority="high" decoding="async">
       </div>
     </div>
   </section>
@@ -537,7 +540,7 @@
   </div>
 </div>
 
-<script src="js/main.js?v=2"></script>
+<script src="js/main.js?v=5"></script>
 </body>
 </html>
 
