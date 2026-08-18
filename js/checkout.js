@@ -423,14 +423,10 @@
 
         successDetails.innerHTML = detailsHtml;
 
-        /* Email confirmation section — COD only, sent automatically via Resend */
+        /* Email confirmation section — sent automatically via Resend */
         var emailResendSection = document.getElementById("emailResendSection");
         if (emailResendSection) {
-          if (isCod) {
-            autoSendConfirmationEmail(window.__pendingOrder);
-          } else {
-            emailResendSection.style.display = "none";
-          }
+          autoSendConfirmationEmail(window.__pendingOrder);
         }
 
         /* Switch to success state */
@@ -453,7 +449,7 @@
   }
 
   /* ========================================================
-     EMAIL CONFIRMATION (COD only — sent via Resend backend)
+     EMAIL CONFIRMATION (Sent via Resend Cloudflare Function)
      ======================================================== */
   function sendOrderEmail(orderData) {
     return fetch(EMAIL_API_URL, {
@@ -461,8 +457,14 @@
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify(orderData)
     }).then(function (res) {
-      if (!res.ok) { throw new Error("Server error " + res.status); }
-      return res;
+      return res.json().then(function (data) {
+        if (!res.ok || data.success === false) {
+          console.error("Resend API response error:", data);
+          var errMsg = (data && data.error) ? (typeof data.error === 'string' ? data.error : JSON.stringify(data.error)) : ("Server returned status " + res.status);
+          throw new Error(errMsg);
+        }
+        return data;
+      });
     });
   }
 
@@ -473,7 +475,7 @@
     statusEl.className = "email-resend-status" + (kind ? " " + kind : "");
   }
 
-  /* Fires automatically the moment a COD order is placed */
+  /* Fires automatically the moment any order is placed */
   function autoSendConfirmationEmail(orderData) {
     var section    = document.getElementById("emailResendSection");
     var resendBtn  = document.getElementById("resendEmailBtn");
@@ -482,7 +484,10 @@
     if (section) { section.style.display = ""; }
 
     if (!orderData.email) {
-      /* No email captured at step 2 — ask for one so we can send confirmation */
+      /* No customer email was entered at step 2, but we still dispatch admin notification */
+      sendOrderEmail(orderData).catch(function(err) {
+        console.warn("Background admin email notification result:", err.message);
+      });
       setEmailStatus("Enter your email to receive an order confirmation.", "");
       return;
     }
@@ -492,12 +497,14 @@
     setEmailStatus("Sending your confirmation email…", "sending");
 
     sendOrderEmail(orderData)
-      .then(function () {
+      .then(function (data) {
+        console.log("Order email dispatched successfully:", data);
         setEmailStatus("✓ Confirmation email sent to " + orderData.email, "success");
         if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = "Resend"; }
       })
-      .catch(function () {
-        setEmailStatus("Couldn't send automatically — tap Send to retry.", "error");
+      .catch(function (err) {
+        console.error("Auto email dispatch error:", err);
+        setEmailStatus("Email delivery issue (" + err.message + ") — tap Resend to retry.", "error");
         if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = "Send"; }
       });
   }
@@ -522,13 +529,15 @@
       orderData.email = email;
 
       sendOrderEmail(orderData)
-        .then(function () {
+        .then(function (data) {
+          console.log("Manual resend success:", data);
           setEmailStatus("✓ Confirmation email sent to " + email, "success");
           resendBtn.textContent = "Resend";
           resendBtn.disabled = false;
         })
-        .catch(function () {
-          setEmailStatus("Failed to send. Please try again.", "error");
+        .catch(function (err) {
+          console.error("Manual resend error:", err);
+          setEmailStatus("Failed to send: " + err.message, "error");
           resendBtn.disabled = false;
           resendBtn.textContent = "Send";
         });
