@@ -100,6 +100,8 @@
 </head>
 <body>
 
+<div class="scroll-progress-bar" id="scrollProgressBar"></div>
+
 <a class="screen-reader-text" href="#main-content">Skip to content</a>
 
 <!-- ===================== Header / Sticky Nav ===================== -->
@@ -113,14 +115,14 @@
       <li><a href="index.html" class="active">Home</a></li>
       <li><a href="index.html#about">About</a></li>
       <li class="nav-dropdown">
-        <a href="index.html#services" class="dropdown-toggle">Services <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+        <a href="services.html" class="dropdown-toggle">Services <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
         <ul class="dropdown-menu">
-          <li><a href="index.html#services">Sale & Marketing</a></li>
-          <li><a href="index.html#services">Printing & Packaging</a></li>
-          <li><a href="index.html#services">Import & Export</a></li>
-          <li><a href="index.html#services">Graphic Designing</a></li>
-          <li><a href="index.html#services">Product Photography</a></li>
-          <li><a href="index.html#services">Web Development & Seo</a></li>
+          <li><a href="services.html#sale-marketing">Sale &amp; Marketing</a></li>
+          <li><a href="services.html#printing-packaging">Printing &amp; Packaging</a></li>
+          <li><a href="services.html#import-export">Import &amp; Export</a></li>
+          <li><a href="services.html#graphic-designing">Graphic Designing</a></li>
+          <li><a href="services.html#product-photography">Product Photography</a></li>
+          <li><a href="services.html#web-development-seo">Web Development &amp; SEO</a></li>
         </ul>
       </li>
       <li><a href="store.html">Store</a></li>
@@ -148,18 +150,18 @@
     <div class="container hero-grid">
       <div class="reveal-left reveal">
         <div class="hero-eyebrow">
-          <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+          <span class="section-label-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="var(--color-secondary)"><rect width="10" height="10" rx="2"/></svg></span>
           WORLD-CLASS EXPERTISE
         </div>
-        <h1>We Bring Your Idea Into Reality.</h1>
+        <h1>We Bring Your Idea Into Reality<span class="accent-dot">.</span></h1>
         <p>Expert Services &amp; Experts International is a culture built on customer care, integrity and excellence — transforming ideas into reality through strategic planning, execution and creative problem-solving.</p>
         <div class="hero-actions">
-          <a href="index.html#contact" class="btn btn-gold">Get In Touch</a>
+          <a href="services.html" class="btn btn-gold">Explore Services</a>
           <a href="store.html" class="btn">Visit Our Store</a>
         </div>
       </div>
       <div class="hero-media reveal-right reveal">
-        <img src="https://experts.com.pk/wp-content/uploads/2025/05/website-front-page-upload-1-edited.jpeg" alt="Expert Services team at work">
+        <img src="images/hero-agency.jpg" alt="Expert Services agency team at work" width="700" height="420" loading="eager" decoding="async">
       </div>
     </div>
   </section>
@@ -169,7 +171,7 @@
     <div class="container about-grid">
       <div class="reveal">
         <div class="section-label">
-          <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+          <span class="section-label-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="var(--color-secondary)"><rect width="10" height="10" rx="2"/></svg></span>
           WHO WE ARE
         </div>
         <h2>A team of highly skilled professionals.</h2>
@@ -187,17 +189,23 @@
     <div class="container">
       <div class="values-grid">
         <div class="value-card reveal">
-          <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+          <div class="value-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </div>
           <h3>Customer Care</h3>
           <p>A customer-first approach ensuring trust, reliability and professionalism in every interaction.</p>
         </div>
         <div class="value-card reveal">
-          <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+          <div class="value-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
           <h3>Integrity</h3>
           <p>We set new standards in service and trade, building lasting relationships with every client.</p>
         </div>
         <div class="value-card reveal">
-          <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+          <div class="value-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
           <h3>Excellence</h3>
           <p>Every interaction is driven by a desire to exceed expectations and deliver exceptional value.</p>
         </div>
@@ -205,65 +213,182 @@
     </div>
   </section>
 
-  <!-- ===================== Services (Service Rows) ===================== -->
+  <!-- ===================== Services (All 6 Services) ===================== -->
   <section class="section" id="services">
     <div class="container">
       <div class="section-label">
-        <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+        <span class="section-label-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="var(--color-secondary)"><rect width="10" height="10" rx="2"/></svg></span>
         WHAT WE DO
       </div>
-      <h2 style="margin-bottom:60px;">Our Services</h2>
+      <h2 style="margin-bottom:50px;">Our Services</h2>
 
       <div class="services-list">
+        
+        <!-- 01. Sale & Marketing -->
         <div class="service-item">
-          <div class="service-row reveal" data-service="planning" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-planning">
+          <div class="service-row reveal" data-service="sale-marketing" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-sale-marketing">
             <div class="service-row-left">
               <span class="service-number">01.</span>
-              <h3>Strategic Planning &amp; Execution</h3>
+              <h3>Sale &amp; Marketing</h3>
             </div>
-            <img class="service-row-arrow" src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/arrow-icon.webp" alt="">
+            <svg class="service-row-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
-          <div class="service-panel" id="servicePanel-planning">
-            <p>From first sketch to final launch, we map every milestone, resource and dependency into a clear execution roadmap — so your idea moves forward with intent, not guesswork.</p>
+          <div class="service-panel" id="servicePanel-sale-marketing">
+            <div class="service-panel-inner">
+              <p>Accelerate your revenue with high-impact sales strategies, customer acquisition funnels, digital advertising campaigns, and market penetration models tailored for Pakistani and global markets.</p>
+              <div class="service-tags">
+                <span class="service-tag">Performance Marketing</span>
+                <span class="service-tag">Lead Generation</span>
+                <span class="service-tag">Sales Funnels</span>
+                <span class="service-tag">Market Positioning</span>
+              </div>
+              <div class="service-action-wrap">
+                <button type="button" class="btn-take-service" data-open-service-modal="Sale &amp; Marketing">Take This Service</button>
+                <a href="services.html#sale-marketing" class="btn" style="padding:12px 22px; font-size:0.88rem;">View Full Details &rarr;</a>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- 02. Printing & Packaging -->
         <div class="service-item">
-          <div class="service-row reveal" data-service="problem-solving" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-problem-solving">
+          <div class="service-row reveal" data-service="printing-packaging" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-printing-packaging">
             <div class="service-row-left">
               <span class="service-number">02.</span>
-              <h3>Creative Problem-Solving</h3>
+              <h3>Printing &amp; Packaging</h3>
             </div>
-            <img class="service-row-arrow" src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/arrow-icon.webp" alt="">
+            <svg class="service-row-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
-          <div class="service-panel" id="servicePanel-problem-solving">
-            <p>When the obvious answer isn't working, we dig deeper — reframing constraints as opportunities and pairing lateral thinking with practical execution to unblock what's stuck.</p>
+          <div class="service-panel" id="servicePanel-printing-packaging">
+            <div class="service-panel-inner">
+              <p>Custom rigid boxes, high-precision offset and digital printing, luxury corporate packaging, custom labels, and retail-ready packaging solutions with premium finishing (embossing, UV, foil stamping).</p>
+              <div class="service-tags">
+                <span class="service-tag">Custom Rigid Boxes</span>
+                <span class="service-tag">Offset &amp; Digital Print</span>
+                <span class="service-tag">Labels &amp; Stickers</span>
+                <span class="service-tag">Luxury Packaging</span>
+              </div>
+              <div class="service-action-wrap">
+                <button type="button" class="btn-take-service" data-open-service-modal="Printing &amp; Packaging">Take This Service</button>
+                <a href="services.html#printing-packaging" class="btn" style="padding:12px 22px; font-size:0.88rem;">View Full Details &rarr;</a>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- 03. Import & Export -->
         <div class="service-item">
-          <div class="service-row reveal" data-service="content" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-content">
+          <div class="service-row reveal" data-service="import-export" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-import-export">
             <div class="service-row-left">
               <span class="service-number">03.</span>
-              <h3>Digital Content Production</h3>
+              <h3>Import &amp; Export</h3>
             </div>
-            <img class="service-row-arrow" src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/arrow-icon.webp" alt="">
+            <svg class="service-row-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
-          <div class="service-panel" id="servicePanel-content">
-            <p>Video, copy, visuals and campaigns crafted to hold attention and drive action — built around how audiences actually discover and consume content today.</p>
+          <div class="service-panel" id="servicePanel-import-export">
+            <div class="service-panel-inner">
+              <p>End-to-end international trade consultation, verified product sourcing from China and global hubs, customs clearance at Karachi Port and airports, freight logistics, and trade compliance.</p>
+              <div class="service-tags">
+                <span class="service-tag">Global Sourcing</span>
+                <span class="service-tag">Customs Clearance</span>
+                <span class="service-tag">Freight Logistics</span>
+                <span class="service-tag">Trade Compliance</span>
+              </div>
+              <div class="service-action-wrap">
+                <button type="button" class="btn-take-service" data-open-service-modal="Import &amp; Export">Take This Service</button>
+                <a href="services.html#import-export" class="btn" style="padding:12px 22px; font-size:0.88rem;">View Full Details &rarr;</a>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- 04. Graphic Designing -->
         <div class="service-item">
-          <div class="service-row reveal" data-service="consultation" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-consultation">
+          <div class="service-row reveal" data-service="graphic-designing" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-graphic-designing">
             <div class="service-row-left">
               <span class="service-number">04.</span>
-              <h3>Business &amp; Trade Consultation</h3>
+              <h3>Graphic Designing</h3>
             </div>
-            <img class="service-row-arrow" src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/arrow-icon.webp" alt="">
+            <svg class="service-row-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
-          <div class="service-panel" id="servicePanel-consultation">
-            <p>Market entry, sourcing, compliance and growth strategy — hands-on guidance drawn from real trade experience, so decisions are backed by insight, not assumption.</p>
+          <div class="service-panel" id="servicePanel-graphic-designing">
+            <div class="service-panel-inner">
+              <p>Captivating visual identity systems, corporate brand guides, marketing collaterals, social media kits, advertising creatives, and packaging artwork designed to elevate your brand prestige.</p>
+              <div class="service-tags">
+                <span class="service-tag">Brand Identity</span>
+                <span class="service-tag">Logo Design</span>
+                <span class="service-tag">Social Media Kits</span>
+                <span class="service-tag">Packaging Art</span>
+              </div>
+              <div class="service-action-wrap">
+                <button type="button" class="btn-take-service" data-open-service-modal="Graphic Designing">Take This Service</button>
+                <a href="services.html#graphic-designing" class="btn" style="padding:12px 22px; font-size:0.88rem;">View Full Details &rarr;</a>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- 05. Product Photography -->
+        <div class="service-item">
+          <div class="service-row reveal" data-service="product-photography" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-product-photography">
+            <div class="service-row-left">
+              <span class="service-number">05.</span>
+              <h3>Product Photography</h3>
+            </div>
+            <svg class="service-row-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="service-panel" id="servicePanel-product-photography">
+            <div class="service-panel-inner">
+              <p>High-resolution studio product photography, clean white-background shoots for Amazon and Shopify, commercial lifestyle staging, 360-degree spins, and advanced color grading.</p>
+              <div class="service-tags">
+                <span class="service-tag">Studio Photography</span>
+                <span class="service-tag">E-Commerce Shoots</span>
+                <span class="service-tag">Commercial Lifestyle</span>
+                <span class="service-tag">High-End Retouching</span>
+              </div>
+              <div class="service-action-wrap">
+                <button type="button" class="btn-take-service" data-open-service-modal="Product Photography">Take This Service</button>
+                <a href="services.html#product-photography" class="btn" style="padding:12px 22px; font-size:0.88rem;">View Full Details &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06. Web Development & SEO -->
+        <div class="service-item">
+          <div class="service-row reveal" data-service="web-development-seo" role="button" tabindex="0" aria-expanded="false" aria-controls="servicePanel-web-development-seo">
+            <div class="service-row-left">
+              <span class="service-number">06.</span>
+              <h3>Web Development &amp; SEO</h3>
+            </div>
+            <svg class="service-row-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="service-panel" id="servicePanel-web-development-seo">
+            <div class="service-panel-inner">
+              <p>Modern responsive websites, blazing-fast web applications, e-commerce platforms, and data-backed search engine optimization (SEO) designed to dominate search rankings and maximize conversions.</p>
+              <div class="service-tags">
+                <span class="service-tag">Custom Web Development</span>
+                <span class="service-tag">E-Commerce Stores</span>
+                <span class="service-tag">Technical SEO</span>
+                <span class="service-tag">Speed &amp; Performance</span>
+              </div>
+              <div class="service-action-wrap">
+                <button type="button" class="btn-take-service" data-open-service-modal="Web Development &amp; SEO">Take This Service</button>
+                <a href="services.html#web-development-seo" class="btn" style="padding:12px 22px; font-size:0.88rem;">View Full Details &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      <!-- Dedicated Services Page CTA -->
+      <div class="services-catalog-cta reveal">
+        <a href="services.html" class="btn btn-gold" style="padding:14px 32px; font-size:0.95rem;">
+          View Full Services Catalog &amp; Execution Model &rarr;
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -285,7 +410,7 @@
     <div class="container contact-grid">
       <div class="reveal">
         <div class="section-label">
-          <img src="https://experts.com.pk/wp-content/themes/oigny-lite/assets/img/square-icon.svg" alt="">
+          <span class="section-label-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="var(--color-secondary)"><rect width="10" height="10" rx="2"/></svg></span>
           GET IN TOUCH
         </div>
         <h2>We are here for the best of services with expertise.</h2>
@@ -322,16 +447,20 @@
       <h4>Explore</h4>
       <ul>
         <li><a href="index.html#about">About</a></li>
-        <li><a href="index.html#services">Services</a></li>
+        <li><a href="services.html">Services</a></li>
         <li><a href="store.html">Store</a></li>
         <li><a href="index.html#contact">Contact</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Store</h4>
+      <h4>Services</h4>
       <ul>
-        <li><a href="store.html">All Products</a></li>
-        <li><a href="store.html">Cash on Delivery</a></li>
+        <li><a href="services.html#sale-marketing">Sale &amp; Marketing</a></li>
+        <li><a href="services.html#printing-packaging">Printing &amp; Packaging</a></li>
+        <li><a href="services.html#import-export">Import &amp; Export</a></li>
+        <li><a href="services.html#graphic-designing">Graphic Designing</a></li>
+        <li><a href="services.html#product-photography">Product Photography</a></li>
+        <li><a href="services.html#web-development-seo">Web Development &amp; SEO</a></li>
       </ul>
     </div>
   </div>
@@ -340,7 +469,6 @@
     <span>Karachi, Pakistan</span>
   </div>
 </footer>
-
 
 <!-- ===================== Cart Drawer ===================== -->
 <div class="cart-overlay" id="cartOverlay"></div>
@@ -360,6 +488,55 @@
     <button class="btn-submit" id="checkoutBtn">Proceed to Checkout</button>
   </div>
 </aside>
+
+<!-- ===================== Take This Service Modal ===================== -->
+<div class="service-modal-overlay" id="serviceModalOverlay" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle">
+  <div class="service-modal">
+    <button class="service-modal-close" id="serviceModalClose" aria-label="Close modal">&times;</button>
+    <div class="service-modal-header">
+      <h3 id="serviceModalTitle">Request This Service</h3>
+      <p>Fill out the quick form below or start an instant conversation on WhatsApp with our team.</p>
+    </div>
+    <form class="service-modal-form" id="serviceModalForm">
+      <div class="form-field">
+        <label for="modalServiceSelect">Selected Service</label>
+        <select id="modalServiceSelect" name="service" required>
+          <option value="Sale & Marketing">Sale &amp; Marketing</option>
+          <option value="Printing & Packaging">Printing &amp; Packaging</option>
+          <option value="Import & Export">Import &amp; Export</option>
+          <option value="Graphic Designing">Graphic Designing</option>
+          <option value="Product Photography">Product Photography</option>
+          <option value="Web Development & SEO">Web Development &amp; SEO</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="modalClientName">Your Name</label>
+        <input type="text" id="modalClientName" name="name" placeholder="e.g. Ali Khan" required>
+      </div>
+      <div class="form-field">
+        <label for="modalClientPhone">WhatsApp / Phone Number</label>
+        <input type="tel" id="modalClientPhone" name="phone" placeholder="e.g. 03331234567" required>
+      </div>
+      <div class="form-field">
+        <label for="modalClientEmail">Email Address (Optional)</label>
+        <input type="email" id="modalClientEmail" name="email" placeholder="e.g. ali@example.com">
+      </div>
+      <div class="form-field">
+        <label for="modalClientNotes">Project Requirements &amp; Scope</label>
+        <textarea id="modalClientNotes" name="notes" placeholder="Tell us briefly about your goals, timeline or specific requirements..."></textarea>
+      </div>
+
+      <div class="service-modal-actions">
+        <button type="submit" class="btn-submit-service">Submit Request</button>
+        <a href="https://wa.me/923332240559" id="modalWhatsAppBtn" target="_blank" rel="noopener" class="btn-modal-whatsapp">
+          💬 &nbsp;Inquire Directly via WhatsApp
+        </a>
+      </div>
+      <p class="service-modal-status" id="serviceModalStatus"></p>
+    </form>
+  </div>
+</div>
+
 <script src="js/main.js"></script>
 </body>
 </html>

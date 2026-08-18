@@ -54,7 +54,6 @@
        ORDER REF BOX
     ====================================== */
     .order-ref       { background: #f8f7ff; border: 1px solid #e5e5f0; border-radius: 12px; padding: 20px 24px; margin-bottom: 28px; }
-    .order-ref-inner { display: flex; justify-content: space-between; align-items: center; }
     .ref-lbl         { font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
     .ref-id          { font-family: 'Courier New', Courier, monospace; font-size: 22px; font-weight: 700; color: #fabe1a; letter-spacing: 2px; }
     .ref-date        { font-size: 12px; color: #888888; text-align: right; line-height: 1.6; }
@@ -94,7 +93,7 @@
     /* ======================================
        PAYMENT PILL
     ====================================== */
-    .pay-pill     { display: inline-flex; align-items: center; gap: 8px; background: #111111; color: #fabe1a; padding: 10px 18px; border-radius: 99px; font-size: 13px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 28px; }
+    .pay-pill     { display: inline-block; background: #111111; color: #fabe1a; padding: 10px 18px; border-radius: 99px; font-size: 13px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 28px; line-height: 1.4; }
 
     /* ======================================
        COD NOTICE BOX
@@ -149,8 +148,7 @@
       .hero h1    { font-size: 22px; }
       .ref-id     { font-size: 18px; }
       .ftr        { padding: 20px; border-radius: 0; }
-      .order-ref-inner { flex-direction: column; gap: 10px; align-items: flex-start; }
-      .ref-date   { text-align: left; }
+      .ref-date   { text-align: right; }
       .trust-row  table { width: 100%; }
     }
   </style>
@@ -196,17 +194,19 @@
 
     <!-- Order Reference Box -->
     <div class="order-ref">
-      <div class="order-ref-inner">
-        <div>
-          <div class="ref-lbl">Order Reference</div>
-          <!--  BACKEND: Replace {{ORDER_ID}}  -->
-          <div class="ref-id">{{ORDER_ID}}</div>
-        </div>
-        <div class="ref-date">
-          <!--  BACKEND: Replace {{ORDER_DATE}} and {{ORDER_TIME}}  -->
-          {{ORDER_DATE}}<br>{{ORDER_TIME}} PKT
-        </div>
-      </div>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td valign="middle" align="left">
+            <div class="ref-lbl">Order Reference</div>
+            <!--  BACKEND: Replace {{ORDER_ID}}  -->
+            <div class="ref-id">{{ORDER_ID}}</div>
+          </td>
+          <td valign="middle" align="right" class="ref-date">
+            <!--  BACKEND: Replace {{ORDER_DATE}} and {{ORDER_TIME}}  -->
+            {{ORDER_DATE}}<br>{{ORDER_TIME}} PKT
+          </td>
+        </tr>
+      </table>
     </div>
 
     <!-- ---- Items ---- -->

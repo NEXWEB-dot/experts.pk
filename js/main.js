@@ -1,8 +1,26 @@
 /* ==========================================================================
-   Expert Services — Shared site behaviour (nav, scroll reveal, cart badge, theme)
+   Expert Services — Shared site behaviour (nav, scroll progress, scroll reveal, cart badge, theme, service modal)
    ========================================================================== */
 (function () {
   "use strict";
+
+  /* ---------- Scroll Progress Bar ---------- */
+  var progressBar = document.getElementById("scrollProgressBar");
+  if (progressBar) {
+    var ticking = false;
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          progressBar.style.width = scrollPercent + "%";
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
 
   /* ---------- Theme Toggle ---------- */
   var themeToggle = document.getElementById("themeToggle");
@@ -51,19 +69,26 @@
     });
   }
 
-  /* ---------- Scroll reveal ---------- */
-  var revealEls = document.querySelectorAll(".reveal");
+  /* ---------- Scroll reveal (Optimized with Stagger Support) ---------- */
+  var revealEls = document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale");
   if ("IntersectionObserver" in window && revealEls.length) {
     var observer = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
+            var delay = entry.target.getAttribute("data-delay");
+            if (delay) {
+              setTimeout(function () {
+                entry.target.classList.add("in-view");
+              }, parseInt(delay, 10));
+            } else {
+              entry.target.classList.add("in-view");
+            }
             observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
     revealEls.forEach(function (el) { observer.observe(el); });
   } else {
@@ -93,6 +118,153 @@
     });
   });
 
+  /* ---------- Services Filter (services.html) ---------- */
+  var filterButtons = document.querySelectorAll(".services-filter-btn");
+  var serviceCards = document.querySelectorAll(".service-card-detailed");
+
+  if (filterButtons.length && serviceCards.length) {
+    filterButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var filter = btn.getAttribute("data-filter");
+        filterButtons.forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+
+        serviceCards.forEach(function (card) {
+          var category = card.getAttribute("data-category");
+          if (filter === "all" || category === filter) {
+            card.style.display = "";
+            setTimeout(function () { card.classList.add("in-view"); }, 50);
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+  }
+
+  /* ---------- URL Hash Scroll & Highlight on services.html ---------- */
+  function checkHashTarget() {
+    if (window.location.hash) {
+      var targetId = window.location.hash.substring(1);
+      var targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        setTimeout(function () {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          targetEl.classList.add("highlight-target");
+          setTimeout(function () { targetEl.classList.remove("highlight-target"); }, 2500);
+        }, 300);
+      }
+    }
+  }
+  checkHashTarget();
+  window.addEventListener("hashchange", checkHashTarget);
+
+  /* ---------- Take This Service Modal Logic ---------- */
+  var serviceModalOverlay = document.getElementById("serviceModalOverlay");
+  var serviceModalClose   = document.getElementById("serviceModalClose");
+  var serviceSelect       = document.getElementById("modalServiceSelect");
+  var serviceModalForm    = document.getElementById("serviceModalForm");
+  var modalWhatsAppBtn    = document.getElementById("modalWhatsAppBtn");
+  var serviceModalStatus  = document.getElementById("serviceModalStatus");
+
+  var WHATSAPP_PHONE = "923332240559";
+
+  function updateWhatsAppLink() {
+    if (!modalWhatsAppBtn) return;
+    var service = serviceSelect ? serviceSelect.value : "General Inquiry";
+    var nameInput = document.getElementById("modalClientName");
+    var phoneInput = document.getElementById("modalClientPhone");
+    var notesInput = document.getElementById("modalClientNotes");
+
+    var name = nameInput ? nameInput.value.trim() : "";
+    var phone = phoneInput ? phoneInput.value.trim() : "";
+    var notes = notesInput ? notesInput.value.trim() : "";
+
+    var text = "Hello Expert Services, I am interested in your *" + service + "* service.";
+    if (name)  text += "\nName: " + name;
+    if (phone) text += "\nPhone: " + phone;
+    if (notes) text += "\nRequirements: " + notes;
+
+    modalWhatsAppBtn.href = "https://wa.me/" + WHATSAPP_PHONE + "?text=" + encodeURIComponent(text);
+  }
+
+  function openServiceModal(serviceName) {
+    if (!serviceModalOverlay) return;
+    if (serviceSelect && serviceName) {
+      for (var i = 0; i < serviceSelect.options.length; i++) {
+        if (serviceSelect.options[i].value.toLowerCase().includes(serviceName.toLowerCase()) || 
+            serviceName.toLowerCase().includes(serviceSelect.options[i].value.toLowerCase())) {
+          serviceSelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+    updateWhatsAppLink();
+    serviceModalOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeServiceModal() {
+    if (!serviceModalOverlay) return;
+    serviceModalOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+    if (serviceModalStatus) {
+      serviceModalStatus.textContent = "";
+      serviceModalStatus.className = "service-modal-status";
+    }
+  }
+
+  // Trigger buttons
+  document.querySelectorAll("[data-open-service-modal]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var serviceName = btn.getAttribute("data-open-service-modal");
+      openServiceModal(serviceName);
+    });
+  });
+
+  if (serviceModalClose) {
+    serviceModalClose.addEventListener("click", closeServiceModal);
+  }
+
+  if (serviceModalOverlay) {
+    serviceModalOverlay.addEventListener("click", function (e) {
+      if (e.target === serviceModalOverlay) {
+        closeServiceModal();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && serviceModalOverlay && serviceModalOverlay.classList.contains("active")) {
+      closeServiceModal();
+    }
+  });
+
+  if (serviceSelect) {
+    serviceSelect.addEventListener("change", updateWhatsAppLink);
+  }
+
+  ["modalClientName", "modalClientPhone", "modalClientNotes"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) { el.addEventListener("input", updateWhatsAppLink); }
+  });
+
+  if (serviceModalForm) {
+    serviceModalForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (serviceModalStatus) {
+        serviceModalStatus.innerHTML = '<span style="color:#4ade80; font-weight:600;">✓ Thank you! Your service request has been received. Our team will contact you shortly.</span>';
+      }
+      setTimeout(function () {
+        updateWhatsAppLink();
+        if (modalWhatsAppBtn) {
+          window.open(modalWhatsAppBtn.href, "_blank");
+        }
+      }, 600);
+    });
+  }
+
   /* ---------- Cart badge sync (shown on every page, incl. Home) ---------- */
   function getCart() {
     try {
@@ -105,11 +277,10 @@
     }
   }
 
-  /* Migrate: clear stale cart items from pre-Sanity era (numeric ids vs Sanity _id) */
+  /* Migrate: clear stale cart items from pre-Sanity era */
   (function migrateCart() {
     var cart = getCart();
     if (!cart.length) return;
-    // Old hardcoded items used numeric ids like 1,2,3... Sanity ids look like "abc123def"
     var hasStale = cart.some(function(item) {
       return typeof item.id === 'number' || (!item.id) || (typeof item.id === 'string' && /^\d+$/.test(item.id));
     });
@@ -129,7 +300,7 @@
   window.addEventListener("storage", updateNavCartCount);
   window.updateNavCartCount = updateNavCartCount;
 
-  /* ---------- Contact form (Home page) — static confirmation, no backend ---------- */
+  /* ---------- Contact form (Home page) — static confirmation ---------- */
   var contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", function (e) {
@@ -248,12 +419,13 @@
     checkoutBtn.addEventListener("click", function() { window.location.href = "checkout.html"; });
   }
 
-  // Expose methods globally for store.js and product.js to use
+  // Expose methods globally
   window.expertsCart = {
     renderCart: renderCart,
     openCart: openCart,
     saveCart: saveCart
   };
+  window.openServiceModal = openServiceModal;
   
   // Render cart on page load
   renderCart();
