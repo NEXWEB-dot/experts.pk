@@ -21,9 +21,33 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Default to verified sender and configured admin
-    const fromEmail = env.RESEND_FROM_EMAIL || 'Expert Services <orders@experts.com.pk>';
-    const adminEmail = env.STORE_ADMIN_EMAIL || 'tostdygstgk@gmail.com';
+    // Helper: Cleanly format from/to email addresses to satisfy Resend API requirements
+    function sanitizeFromEmail(raw) {
+      if (!raw) return 'Expert Services <orders@experts.com.pk>';
+      let str = raw.trim().replace(/^["']|["']$/g, '');
+      
+      const nameAndAngle = str.match(/^(.+?)\s*<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>$/);
+      if (nameAndAngle && nameAndAngle[1].trim().length > 0) {
+        return `${nameAndAngle[1].trim()} <${nameAndAngle[2].trim()}>`;
+      }
+
+      const emailOnly = str.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+      if (emailOnly) {
+        return `Expert Services <${emailOnly[1].trim()}>`;
+      }
+
+      return 'Expert Services <orders@experts.com.pk>';
+    }
+
+    function sanitizeEmailAddress(raw, fallback) {
+      if (!raw) return fallback;
+      const match = raw.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+      return match ? match[1].toLowerCase().trim() : fallback;
+    }
+
+    // Default to verified sender and configured admin with automatic formatting
+    const fromEmail = sanitizeFromEmail(env.RESEND_FROM_EMAIL);
+    const adminEmail = sanitizeEmailAddress(env.STORE_ADMIN_EMAIL, 'tostdygstgk@gmail.com');
 
     // Format timestamps for PKT
     const now = new Date();
@@ -48,6 +72,10 @@ export async function onRequestPost(context) {
     // Helper: Resend API Dispatch
     async function sendViaResend(toAddress, subject, htmlContent) {
       try {
+        const cleanTo = sanitizeEmailAddress(toAddress);
+        if (!cleanTo) {
+          return { success: false, error: 'Invalid recipient email: ' + toAddress };
+        }
         const resp = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -56,7 +84,7 @@ export async function onRequestPost(context) {
           },
           body: JSON.stringify({
             from: fromEmail,
-            to: [toAddress.trim()],
+            to: [cleanTo],
             subject: subject,
             html: htmlContent
           })
@@ -64,7 +92,7 @@ export async function onRequestPost(context) {
 
         const data = await resp.json();
         if (!resp.ok) {
-          console.error(`Resend API failed (${resp.status}) for ${toAddress}:`, data);
+          console.error(`Resend API failed (${resp.status}) for ${cleanTo}:`, data);
           return { success: false, status: resp.status, error: data };
         }
         return { success: true, id: data.id };
