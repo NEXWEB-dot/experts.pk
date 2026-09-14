@@ -71,7 +71,8 @@
 
     try {
       const query = `*[_type == "product" && slug.current == "${slug}"][0]`;
-      currentProduct = await window.sanityClient.fetch(query);
+      // Always skip cache so navigating between products never shows stale data
+      currentProduct = await window.sanityClient.fetch(query, { skipCache: true });
 
       if (!currentProduct) {
         container.innerHTML = '<div class="store-loading">Product not found. <a href="store.html" style="color:var(--color-secondary)">Go to Store</a></div>';

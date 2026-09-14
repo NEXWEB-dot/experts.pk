@@ -98,7 +98,7 @@
       // Parallel fetch via Sanity Edge CDN
       const catQuery = `*[_type == "category"] | order(order asc) { _id, title, "slug": slug.current }`;
       const prodQuery = `*[_type == "product"] | order(order asc, _createdAt desc) {
-        _id, name, "slug": slug.current, description, price, oldPrice, badge, comingSoon, inStock,
+        _id, name, "slug": slug.current, shortDescription, description, price, oldPrice, badge, comingSoon, inStock,
         "categorySlug": category->slug.current,
         colors, images
       }`;
@@ -211,7 +211,7 @@
           "</a>" +
           '<div class="product-info">' +
             '<a href="' + productLink + '"><h3>' + p.name + '</h3></a>' +
-            '<p class="product-desc">' + (p.description || '') + "</p>" +
+            (p.shortDescription ? '<p class="product-desc">' + p.shortDescription + '</p>' : '') +
             '<div class="product-price-row">' +
               '<span class="product-price">' + oldPriceHtml + formatPKR(p.price) + "</span>" +
               btnHtml +
