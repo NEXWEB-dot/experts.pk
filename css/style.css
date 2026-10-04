@@ -740,12 +740,13 @@ input, textarea, select{ font-family:var(--font-body); }
 
 .product-detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 60px;
   align-items: start;
 }
 
 .product-gallery {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -796,6 +797,8 @@ input, textarea, select{ font-family:var(--font-body); }
 }
 
 .product-info-block {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -807,6 +810,7 @@ input, textarea, select{ font-family:var(--font-body); }
 }
 
 .detail-price {
+  flex-wrap: wrap;
   font-family: var(--font-heading);
   font-size: 1.5rem;
   color: var(--color-secondary);
@@ -822,6 +826,7 @@ input, textarea, select{ font-family:var(--font-body); }
 }
 
 .detail-description {
+  white-space: pre-line;
   color: var(--color-text-muted);
   line-height: 1.8;
 }
@@ -936,6 +941,29 @@ input, textarea, select{ font-family:var(--font-body); }
     grid-template-columns: 1fr;
     gap: 40px;
   }
+}
+
+.trust-badge-item svg { flex-shrink: 0; }
+.payment-method-icon svg, .payment-info-icon svg { display: block; }
+.payment-method-text { min-width: 0; overflow-wrap: anywhere; }
+.checkout-item-details { min-width: 0; overflow-wrap: anywhere; }
+.checkout-item-meta { flex-wrap: wrap; }
+.thumbnail:focus-visible, .color-swatch-wrapper:focus-visible { outline: 2px solid var(--color-secondary); outline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .product-detail-section { padding: 32px 16px; }
+  .product-detail-section > .container { padding: 0; width: 100%; }
+  .product-detail-grid { gap: 24px; }
+  .product-info-block { gap: 18px; }
+  .product-info-block h1 { font-size: clamp(1.4rem, 6vw, 2rem); line-height: 1.35; }
+  .thumbnail-list { max-width: 100%; gap: 8px; }
+  .thumbnail { width: 64px; height: 64px; }
+  .add-to-cart-section { flex-wrap: wrap; gap: 12px; }
+  .btn-add-cart { flex: 1 1 100%; height: auto; min-height: 48px; white-space: normal; }
+  .qty-input button { width: 44px; height: 44px; }
+  .trust-badges-detail { margin-top: 8px; }
+  .payment-method-option { gap: 10px; padding: 14px; }
+  .payment-method-icon { flex: 0 0 28px; }
 }
 
 .product-grid{

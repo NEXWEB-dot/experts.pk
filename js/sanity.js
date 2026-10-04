@@ -1,7 +1,7 @@
 /* ==========================================================================
    Expert Services — Optimized Sanity CDN Client & Image Engine
-   - Uses Sanity Global Edge CDN (apicdn.sanity.io) for sub-20ms cached reads
-   - Stale-While-Revalidate Session Cache to eliminate repeat network requests
+   - Uses Sanity Global Edge CDN (apicdn.sanity.io) for cached reads
+   - Bounded Session Cache to eliminate repeat network requests
    - WebP/AVIF auto-format & quality-optimized image transformation pipeline
    ========================================================================== */
 
@@ -15,104 +15,51 @@
   // Base URL querying via Sanity's Global Edge CDN
   const SANITY_CDN_URL = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
 
-  // Cache configuration (5 minute TTL)
   const CACHE_TTL_MS = 5 * 60 * 1000;
+  const MAX_STALE_MS = 60 * 60 * 1000;
   const memoryCache = new Map();
-
-  /**
-   * Helper to generate a cache storage key from a GROQ query
-   */
-  function getCacheKey(query) {
-    return 'sanity_cache_' + btoa(encodeURIComponent(query)).slice(0, 48);
-  }
-
-  /**
-   * Reads from memory or sessionStorage cache if fresh
-   */
-  function getCachedResult(key) {
-    // 1. Check in-memory map
-    if (memoryCache.has(key)) {
-      const entry = memoryCache.get(key);
-      if (Date.now() - entry.timestamp < CACHE_TTL_MS) {
-        return entry.data;
-      }
-    }
-
-    // 2. Check sessionStorage
-    try {
-      const raw = sessionStorage.getItem(key);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Date.now() - parsed.timestamp < CACHE_TTL_MS) {
-          memoryCache.set(key, parsed);
-          return parsed.data;
-        }
-      }
-    } catch (e) {
-      // Ignore storage quota / private mode exceptions
-    }
-
-    return null;
-  }
-
-  /**
-   * Writes query response into cache
-   */
-  function setCachedResult(key, data) {
-    const entry = { data: data, timestamp: Date.now() };
-    memoryCache.set(key, entry);
-    try {
-      sessionStorage.setItem(key, JSON.stringify(entry));
-    } catch (e) {
-      // Handle storage quota limits gracefully
-    }
-  }
-
-  /**
-   * Executes a GROQ query against the Sanity Edge CDN.
-   * Utilizes stale-while-revalidate caching for instant rendering.
-   * @param {string} query - The GROQ query string.
-   * @param {object} [opts] - Query options ({ skipCache: boolean })
-   * @returns {Promise<any>} The result of the query.
-   */
+  const pending = new Map();
+  let generation = 0;
   async function fetchSanity(query, opts = {}) {
-    const cacheKey = getCacheKey(query);
-
-    // Return cached data immediately if valid and not explicitly skipped
-    if (!opts.skipCache) {
-      const cached = getCachedResult(cacheKey);
-      if (cached !== null) {
-        return cached;
-      }
-    }
-
-    try {
-      const url = `${SANITY_CDN_URL}?query=${encodeURIComponent(query)}`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
+    const params = new URLSearchParams({query, perspective: 'published'});
+    Object.keys(opts.params || {}).sort().forEach(k => params.set('$' + k, JSON.stringify(opts.params[k])));
+    const key = 'sanity_cache_v2_' + SANITY_CDN_URL + '?' + params;
+    let cached = memoryCache.get(key);
+    if (!cached) { try { cached = JSON.parse(sessionStorage.getItem(key)); } catch (_) {} }
+    const age = cached && Date.now() - cached.timestamp;
+    if (!opts.skipCache && cached && age >= 0 && age < CACHE_TTL_MS) return cached.data;
+    if (pending.has(key)) return pending.get(key);
+    const currentGeneration = generation;
+    const task = (async () => {
+      try {
+        const response = await fetch(SANITY_CDN_URL + '?' + params, {headers: {Accept: 'application/json'}, signal: AbortSignal.timeout(10000)});
+        if (!response.ok) throw new Error('Sanity HTTP ' + response.status);
+        const json = await response.json();
+        if (!Object.prototype.hasOwnProperty.call(json, 'result')) throw new Error('Invalid response');
+        if (generation === currentGeneration) {
+          const entry = {data: json.result, timestamp: Date.now()};
+          if (memoryCache.size >= 100) memoryCache.delete(memoryCache.keys().next().value);
+          memoryCache.set(key, entry);
+          try {
+            const keys = Object.keys(sessionStorage).filter(k => k.startsWith('sanity_cache_'));
+            keys.forEach(k => {
+              try { const old = JSON.parse(sessionStorage.getItem(k));
+                if (!k.startsWith('sanity_cache_v2_') || !old || Date.now() - old.timestamp >= MAX_STALE_MS) sessionStorage.removeItem(k);
+              } catch (_) { sessionStorage.removeItem(k); }
+            });
+            if (keys.length >= 100) sessionStorage.removeItem(keys[0]);
+            sessionStorage.setItem(key, JSON.stringify(entry));
+          } catch (_) {}
         }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Sanity CDN returned HTTP ${response.status}`);
-      }
-
-      const json = await response.json();
-      const result = json.result;
-
-      // Cache successful response
-      setCachedResult(cacheKey, result);
-
-      return result;
-    } catch (error) {
-      console.warn('Sanity CDN fetch notice:', error.message);
-      // If network fails, attempt fallback to stale cache if available
-      const stale = memoryCache.get(cacheKey);
-      if (stale) return stale.data;
-      return null;
-    }
+        return json.result;
+      } catch (error) {
+        console.warn('Sanity fetch failed:', error.message);
+        if (!opts.skipCache && cached && age >= 0 && age < MAX_STALE_MS) return cached.data;
+        return null;
+      } finally { pending.delete(key); }
+    })();
+    pending.set(key, task);
+    return task;
   }
 
   /**
@@ -127,7 +74,7 @@
 
     // Extract reference details: image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg
     const parts = source.asset._ref.split('-');
-    if (parts.length < 4) return '';
+    if (!/^image-[a-zA-Z0-9]+-\d+x\d+-[a-zA-Z0-9]+$/.test(source.asset._ref)) return '';
 
     const id = parts[1];
     const dimensions = parts[2];
@@ -164,6 +111,7 @@
     fetch: fetchSanity,
     urlFor: urlFor,
     clearCache: function () {
+      generation++;
       memoryCache.clear();
       try {
         Object.keys(sessionStorage).forEach(k => {

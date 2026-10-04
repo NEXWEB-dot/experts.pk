@@ -5,6 +5,8 @@
    ========================================================================== */
 (function () {
   "use strict";
+  var escapeHtml = window.storeSecurity.escapeHtml;
+  var safeImageUrl = window.storeSecurity.imageUrl;
 
   var CART_KEY = "expertsStoreCart";
 
@@ -128,7 +130,7 @@
     
     if (categories && categories.length > 0) {
       categories.forEach(cat => {
-        html += `<button class="filter-btn" data-category="${cat.slug}">${cat.title}</button>`;
+        html += `<button class="filter-btn" data-category="${escapeHtml(cat.slug)}">${escapeHtml(cat.title)}</button>`;
       });
     }
 
@@ -186,7 +188,7 @@
 
     grid.innerHTML = products.map(function (p, index) {
       var badgeHtml = p.badge
-        ? '<span class="product-badge' + (p.comingSoon ? " badge-soon" : "") + '">' + p.badge + "</span>"
+        ? '<span class="product-badge' + (p.comingSoon ? " badge-soon" : "") + '">' + escapeHtml(p.badge) + "</span>"
         : "";
       var oldPriceHtml = p.oldPrice
         ? '<span class="old-price">' + formatPKR(p.oldPrice) + "</span>"
@@ -194,24 +196,24 @@
 
       var btnHtml = p.comingSoon || !p.inStock
         ? '<button class="add-to-cart-btn soon-btn" disabled>' + (p.comingSoon ? 'Coming Soon' : 'Out of Stock') + '</button>'
-        : '<button class="add-to-cart-btn" data-id="' + p._id + '">Add to Cart</button>';
+        : '<button class="add-to-cart-btn" data-id="' + escapeHtml(p._id) + '">Add to Cart</button>';
 
       var imgSrc = (p.images && p.images.length > 0)
         ? window.sanityClient.urlFor(p.images[0], { width: 480, height: 480, fit: 'crop', quality: 82 })
         : PLACEHOLDER_PHOTO;
 
-      var productLink = `product.html?slug=${p.slug}`;
+      var productLink = `product.html?slug=${encodeURIComponent(p.slug)}`;
 
       return (
         '<div class="product-card reveal' + (p.comingSoon ? " product-card--soon" : "") + '" data-delay="' + ((index % 4) * 80) + '">' +
           '<a href="' + productLink + '" class="product-media">' +
             badgeHtml +
-            '<img src="' + imgSrc + '" alt="' + p.name + '" width="480" height="480" loading="lazy" decoding="async">' +
+            '<img src="' + imgSrc + '" alt="' + escapeHtml(p.name) + '" width="480" height="480" loading="lazy" decoding="async">' +
             (p.comingSoon ? '<div class="soon-overlay"><span>Coming Soon</span></div>' : (!p.inStock ? '<div class="soon-overlay"><span>Out of Stock</span></div>' : '')) +
           "</a>" +
           '<div class="product-info">' +
-            '<a href="' + productLink + '"><h3>' + p.name + '</h3></a>' +
-            (p.shortDescription ? '<p class="product-desc">' + p.shortDescription + '</p>' : '') +
+            '<a href="' + productLink + '"><h3>' + escapeHtml(p.name) + '</h3></a>' +
+            (p.shortDescription ? '<p class="product-desc">' + escapeHtml(p.shortDescription) + '</p>' : '') +
             '<div class="product-price-row">' +
               '<span class="product-price">' + oldPriceHtml + formatPKR(p.price) + "</span>" +
               btnHtml +

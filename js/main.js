@@ -3,6 +3,8 @@
    ========================================================================== */
 (function () {
   "use strict";
+  var escapeHtml = window.storeSecurity.escapeHtml;
+  var safeImageUrl = window.storeSecurity.imageUrl;
 
   /* ---------- Scroll Progress Bar ---------- */
   var progressBar = document.getElementById("scrollProgressBar");
@@ -359,18 +361,18 @@
     }
 
     itemsWrap.innerHTML = cart.map(function (item, index) {
-      var colorText = item.color ? '<span style="font-size:0.75rem; color:#8a8a8a; display:block; margin-bottom:4px;">Color: ' + item.color + '</span>' : '';
+      var colorText = item.color ? '<span style="font-size:0.75rem; color:#8a8a8a; display:block; margin-bottom:4px;">Color: ' + escapeHtml(item.color) + '</span>' : '';
       
       return (
         '<div class="cart-item">' +
-          '<img src="' + item.img + '" alt="' + item.name + '">' +
+          '<img src="' + safeImageUrl(item.img) + '" alt="' + escapeHtml(item.name) + '">' +
           '<div class="cart-item-info">' +
-            "<h4>" + item.name + "</h4>" +
+            "<h4>" + escapeHtml(item.name) + "</h4>" +
             colorText + 
             '<div class="cart-item-price">' + formatPKR(item.price) + "</div>" +
             '<div class="qty-control">' +
               '<button data-action="dec" data-index="' + index + '">&minus;</button>' +
-              "<span>" + item.qty + "</span>" +
+              "<span>" + escapeHtml(item.qty) + "</span>" +
               '<button data-action="inc" data-index="' + index + '">&plus;</button>' +
             "</div>" +
             '<button class="cart-item-remove" data-action="remove" data-index="' + index + '">Remove</button>' +

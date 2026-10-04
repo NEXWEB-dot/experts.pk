@@ -3,6 +3,8 @@
    ========================================================================== */
 (function () {
   "use strict";
+  var escapeHtml = window.storeSecurity.escapeHtml;
+  var safeImageUrl = window.storeSecurity.imageUrl;
 
   var currentProduct = null;
   var selectedColor = null;
@@ -70,9 +72,9 @@
     `;
 
     try {
-      const query = `*[_type == "product" && slug.current == "${slug}"][0]`;
-      // Always skip cache so navigating between products never shows stale data
-      currentProduct = await window.sanityClient.fetch(query, { skipCache: true });
+      const query = `*[_type == "product" && slug.current == $slug][0]`;
+      // Parameterized query and complete cache keys isolate each product.
+      currentProduct = await window.sanityClient.fetch(query, { params: { slug: slug } });
 
       if (!currentProduct) {
         container.innerHTML = '<div class="store-loading">Product not found. <a href="store.html" style="color:var(--color-secondary)">Go to Store</a></div>';
@@ -119,9 +121,9 @@
           <h4>Colors</h4>
           <div class="color-options" id="colorOptions">
             ${product.colors.map((c, i) => `
-              <div class="color-swatch-wrapper ${i === 0 ? 'active' : ''}" data-color="${c.name}">
-                <div class="color-swatch" style="background-color: ${c.hex}"></div>
-                <span class="color-name">${c.name}</span>
+              <div class="color-swatch-wrapper ${i === 0 ? 'active' : ''}" data-color="${escapeHtml(c.name)}">
+                <div class="color-swatch" style="background-color: ${/^#[0-9a-f]{3,8}$/i.test(c.hex) ? c.hex : "#888"}"></div>
+                <span class="color-name">${escapeHtml(c.name)}</span>
               </div>
             `).join('')}
           </div>
@@ -138,29 +140,29 @@
       <div class="product-detail-grid reveal in-view">
         <div class="product-gallery">
           <div class="main-image">
-            <img src="${mainImgSrc}" id="mainProductImage" alt="${product.name}" width="900" height="900" fetchpriority="high" decoding="async">
+            <img src="${mainImgSrc}" id="mainProductImage" alt="${escapeHtml(product.name)}" width="900" height="900" fetchpriority="high" decoding="async">
           </div>
           ${thumbnailsHtml}
         </div>
         
         <div class="product-info-block">
-          <h1>${product.name}</h1>
+          <h1>${escapeHtml(product.name)}</h1>
           <div class="detail-price">
             ${oldPriceHtml}
             ${formatPKR(product.price)}
           </div>
           
           <div class="detail-description">
-            ${product.description || ''}
+            ${escapeHtml(product.description || '')}
           </div>
           
           ${colorsHtml}
           
           <div class="add-to-cart-section">
             <div class="qty-input">
-              <button id="qtyDec">&minus;</button>
+              <button id="qtyDec" type="button" aria-label="Decrease quantity">&minus;</button>
               <span id="qtyDisplay">1</span>
-              <button id="qtyInc">&plus;</button>
+              <button id="qtyInc" type="button" aria-label="Increase quantity">&plus;</button>
             </div>
             <button class="btn btn-gold btn-add-cart" id="addToCartBtn" ${btnDisabled}>${btnText}</button>
           </div>

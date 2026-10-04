@@ -4,6 +4,8 @@
    ========================================================================== */
 (function () {
   "use strict";
+  var escapeHtml = window.storeSecurity.escapeHtml;
+  var safeImageUrl = window.storeSecurity.imageUrl;
 
   /* ---- Config ---- */
   var CART_KEY        = "expertsStoreCart";
@@ -135,18 +137,18 @@
       var lineTotal = item.price * item.qty;
       subtotal += lineTotal;
       var colorText = item.color
-        ? '<span style="font-size:0.78rem;color:var(--color-text-muted);display:block;margin-bottom:4px;">Color: ' + item.color + '</span>'
+        ? '<span style="font-size:0.78rem;color:var(--color-text-muted);display:block;margin-bottom:4px;">Color: ' + escapeHtml(item.color) + '</span>'
         : '';
       return (
         '<div class="checkout-item">' +
-          '<img src="' + item.img + '" alt="' + item.name + '" class="checkout-item-img">' +
+          '<img src="' + safeImageUrl(item.img) + '" alt="' + escapeHtml(item.name) + '" class="checkout-item-img">' +
           '<div class="checkout-item-details">' +
-            '<h4>' + item.name + '</h4>' +
+            '<h4>' + escapeHtml(item.name) + '</h4>' +
             colorText +
             '<div class="checkout-item-meta" style="margin-top:10px;">' +
               '<div class="qty-control">' +
                 '<button type="button" data-action="dec" data-index="' + index + '">&minus;</button>' +
-                '<span>' + item.qty + '</span>' +
+                '<span>' + escapeHtml(item.qty) + '</span>' +
                 '<button type="button" data-action="inc" data-index="' + index + '">&plus;</button>' +
               '</div>' +
               '<span class="checkout-item-line-price">' + formatPKR(lineTotal) + '</span>' +
@@ -172,16 +174,16 @@
     itemsList.innerHTML = cart.map(function (item) {
       var lineTotal = item.price * item.qty;
       var colorText = item.color
-        ? '<span style="font-size:0.75rem;color:var(--color-text-muted);display:block;">Color: ' + item.color + '</span>'
+        ? '<span style="font-size:0.75rem;color:var(--color-text-muted);display:block;">Color: ' + escapeHtml(item.color) + '</span>'
         : '';
       return (
         '<div class="checkout-item">' +
-          '<img src="' + item.img + '" alt="' + item.name + '" class="checkout-item-img">' +
+          '<img src="' + safeImageUrl(item.img) + '" alt="' + escapeHtml(item.name) + '" class="checkout-item-img">' +
           '<div class="checkout-item-details">' +
-            '<h4>' + item.name + '</h4>' +
+            '<h4>' + escapeHtml(item.name) + '</h4>' +
             colorText +
             '<div class="checkout-item-meta">' +
-              '<span class="checkout-item-qty">Qty: ' + item.qty + '</span>' +
+              '<span class="checkout-item-qty">Qty: ' + escapeHtml(item.qty) + '</span>' +
               '<span class="checkout-item-line-price">' + formatPKR(lineTotal) + '</span>' +
             '</div>' +
           '</div>' +
@@ -227,6 +229,7 @@
 
   document.getElementById("checkoutFormStep2")?.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (!e.currentTarget.reportValidity()) return;
     goToStep(3);
   });
 
@@ -242,7 +245,7 @@
     cod: null, // no info panel for COD
     easypaisa: (
       '<div class="payment-info-inner">' +
-        '<div class="payment-info-icon">💚</div>' +
+        '<div class="payment-info-icon"><svg aria-hidden="true" focusable="false" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="m9 10 2 2 4-4M10 18h4"/></svg></div>' +
         '<div>' +
           '<p class="payment-info-title">Transfer to Easypaisa</p>' +
           '<p class="payment-info-number">03332240559</p>' +
@@ -252,7 +255,7 @@
     ),
     jazzcash: (
       '<div class="payment-info-inner">' +
-        '<div class="payment-info-icon">🔴</div>' +
+        '<div class="payment-info-icon"><svg aria-hidden="true" focusable="false" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18M15 13h6v4h-6z"/></svg></div>' +
         '<div>' +
           '<p class="payment-info-title">Transfer to JazzCash</p>' +
           '<p class="payment-info-number">03332240559</p>' +
@@ -262,7 +265,7 @@
     ),
     bank: (
       '<div class="payment-info-inner">' +
-        '<div class="payment-info-icon">🏦</div>' +
+        '<div class="payment-info-icon"><svg aria-hidden="true" focusable="false" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-6 9 6H3ZM3 21h18M5 10v8M10 10v8M14 10v8M19 10v8"/></svg></div>' +
         '<div>' +
           '<p class="payment-info-title">Bank Transfer</p>' +
           '<p class="payment-info-note">Our bank account details will be shared with you on WhatsApp after you place your order.</p>' +
@@ -330,7 +333,7 @@
       var cityVal    = (document.getElementById("city")       || {}).value || "";
       var notesVal   = (document.getElementById("orderNotes") || {}).value || "";
 
-      setTimeout(function () {
+      setTimeout(async function () {
         var orderId = generateOrderId();
         var cart    = getCart();
 
@@ -363,9 +366,27 @@
           cart:      cart,
           subtotal:  subtotal,
           shipping:  shipping,
+          deliveryTime: timeVal,
           total:     totalAmt,
           payment:   selectedPayment
         };
+
+        try {
+          await sendOrderEmail(window.__pendingOrder);
+        } catch (error) {
+          btn.disabled = false;
+          btnTxt.style.display = '';
+          spinner.style.display = 'none';
+          let notice = document.getElementById('orderSubmitError');
+          if (!notice) {
+            notice = document.createElement('p');
+            notice.id = 'orderSubmitError';
+            notice.setAttribute('role', 'alert');
+            btn.parentElement.before(notice);
+          }
+          notice.textContent = error.message + ' Your cart has been kept. Contact the store before retrying if a confirmation arrived.';
+          return;
+        }
 
         /* ---- Success screen ---- */
         var paymentMethodDisplay = {
@@ -378,7 +399,7 @@
         orderIdDisplay.textContent = "Order ID: " + orderId;
 
         var detailsHtml =
-          '<p>Delivering to <strong>' + nameVal + '</strong> in <strong>' + cityVal + '</strong></p>' +
+          '<p>Delivering to <strong>' + escapeHtml(nameVal) + '</strong> in <strong>' + escapeHtml(cityVal) + '</strong></p>' +
           '<p style="font-size:0.85rem;color:var(--color-text-muted);margin-top:6px;">Payment: ' + (paymentMethodDisplay[selectedPayment] || paymentMethodDisplay.cod) + '</p>';
 
         var whatsappUrl = null;
@@ -409,7 +430,7 @@
             msg += "%0A⚠️ Please share your payment screenshot on WhatsApp to confirm the order.";
           }
 
-          whatsappUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + msg;
+          whatsappUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg.replace(/%0A/g, "\n"));
 
           detailsHtml +=
             '<div style="margin-top:20px;">' +
@@ -426,7 +447,9 @@
         /* Email confirmation section — sent automatically via Resend */
         var emailResendSection = document.getElementById("emailResendSection");
         if (emailResendSection) {
-          autoSendConfirmationEmail(window.__pendingOrder);
+          emailResendSection.style.display = '';
+          document.getElementById('resendEmailInput').value = emailVal;
+          setEmailStatus(emailVal ? 'Confirmation email sent to ' + emailVal : 'Order sent to the store. Add your email below for a copy.', 'success');
         }
 
         /* Switch to success state */
